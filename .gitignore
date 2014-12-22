@@ -1,3 +1,6 @@
+# Flask session key
+session_key.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
