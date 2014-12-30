@@ -1,8 +1,9 @@
 gradebook
 ========
 
-Chesley Tan, Junhao Dong, Eric Wong, Elvin Shoyfer  
-Designated leader: Chesley
+[Chesley Tan](https://github.com/ChesleyTan), [Junhao Dong](https://github.com/junhaodong), [Eric Wong](https://github.com/ericwongg), [Elvin Shoyfer](https://github.com/eshoyfer)  
+Designated leader: [Chesley Tan](https://github.com/ChesleyTan)   
+Relevant Python style guide: https://www.python.org/dev/peps/pep-0008/
 
 #Teacher
 * Comprehensive gradebook  
