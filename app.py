@@ -11,7 +11,7 @@ def index():
 
 #======================END-DEFINITIONS======================
 
-app.secret_key = open('session_key.txt', 'r').read().strip()
+#app.secret_key = open('session_key.txt', 'r').read().strip()
 
 if __name__ == "__main__":
     app.debug=True

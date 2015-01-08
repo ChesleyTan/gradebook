@@ -1,14 +1,42 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<head>
-		<title>Gradebook</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
-		<link rel="stylesheet" href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css">
-</head>
+{% block bodycontent %}
 
-<body>
-		hello test
-		{% block bodycontent %}
-		{% endblock bodycontent %}
-		
-</body>
+<center> <h1>Welcome to [Blog Thing]!</h1> </center>
+
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>See posts:</h4>
+        </div>
+        
+        <table class="table table-striped">
+            {% for title in titles %}
+            <tr>
+                <td><a href="{{title}}">{{title}}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4>Create a new post!<h4>
+        </div>
+        
+        <div class="panel-body form-group">
+            <form>
+                <input type="text" class="form-control" name="post_title" placeholder="New Post Title">
+                <br>
+                <textarea class="form-control" name="post_body" rows="15" placeholder="Write a new post here..."></textarea>
+                <br>
+                <center>
+                    <button type="submit" name="post_button" class="btn btn-default btn-primary">Create!</button>
+                </center>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock bodycontent %}
