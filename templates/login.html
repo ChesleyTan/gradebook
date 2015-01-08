@@ -1,25 +1,23 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
+{% block content%}
 
-  <head>
-
-  </head>
-  <body>
     <h1>Welcome gradebook</h1>
     <div>
     Login:
     <form method="POST">
-      <input type="text" name="email">
-      <input type="text" name="pword">
+      Email:<input type="text" name="email">
+      Password:<input type="text" name="pword">
       <input type="submit" value="submit" name="submit">
     </form>
     Register:
     <form method="POST">
-      <input type="text" name="fname">
-      <input type="text" name="lname">
-      <input type="text" name="email">
-      <input type="text" name="pword">
-  </body>
-  
-</html>
+      First Name:<input type="text" name="fname">
+      Last Name:<input type="text" name="lname">
+      Email:<input type="text" name="email">
+      Password:<input type="text" name="pword">
+    </form>
+
+{% endblock %}
+    
+      
