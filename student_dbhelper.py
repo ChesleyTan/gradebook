@@ -19,16 +19,16 @@ def insert(email, password, name):
         students.insert(new_user)
         return (True, "Registration successful. Enjoy!")
     else:
-        return (False, "Registration error: A user with that email already\
-                exists.")
+        return (False, "Registration error: A user with that email already "
+                "exists.")
 
 def validate_registration(email, password):
     if (len(email) < 1):
-        return (False, "Registration error: Your email must be at least 1\
-                character long")
+        return (False, "Registration error: Your email must be at least 1 "
+                "character long")
     if (len(password) < 6):
-        return (False, "Registration error: Your password must be at least 6\
-                characters long")
+        return (False, "Registration error: Your password must be at least 6 "
+                "characters long")
     return (True, "Registration successful. Enjoy!")
 
 def exists(email):
