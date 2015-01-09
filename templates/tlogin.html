@@ -2,21 +2,30 @@
 
 {% block content%}
 
-    <h1>Welcome gradebook</h1>
-    <div>
-    Login:
-    <form method="POST">
-      Email:<input type="text" name="email">
-      Password:<input type="text" name="pword">
-      <input type="submit" value="submit" name="submit">
+<center><h1>Welcome to gradebook</h1></center>
+<!-- make a div to hold info relevent for teachers !-->
+<h2>Create an account or log in</h2>
+
+<div class="container">
+
+  <div class="panel-body form-group">
+    <form>
+      
+      <input type="text" class="form-control" name="email" placeholder="your@emailadress.here">
+      <br>
+      <textarea class="form-control" name="password" rows="15" placeholder="password"></textarea>
+      <br>
+      <center>
+	<button type="submit" name="button_login" class="btn btn-default btn-primary">Login</button>
+      </center>
+      <center>
+	<button type="submit" name="button_register" class="btn btn-default btn-primary">Register</button>
+      </center>
+      
     </form>
-    Register:
-    <form method="POST">
-      First Name:<input type="text" name="fname">
-      Last Name:<input type="text" name="lname">
-      Email:<input type="text" name="email">
-      Password:<input type="text" name="pword">
-    </form>
+
+  </div>
+    
 
 {% endblock %}
     
