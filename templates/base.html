@@ -1,48 +1,68 @@
 <!DOCTYPE html>
+<html>
 
 <head>
         <title>Gradebook</title>
+
         <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
         <link rel="stylesheet" href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css">
+
+	<!-- material design -->
+	<link href="">
+
+	<!-- NEED TO DO PAGE STYLING -->
+
 </head>
 
 <body>
 
-  {% block bodycontent %}
-
-  <nav class="navbar navbar-default">
+  <div class="navbar navbar-default">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
+	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
-    </button>
-    {% if session.logged_in %}
-    <a class="navbar-brand" href="{{ url_for('user') }}">gradebook</a>
-    {% else %}
-    <a class="navbar-brand" href="{{ url_for('home') }}">gradebook</a>
-    {% endif %}
+	</button>
+
+	<!-- location of clicking icon will depend on login status -->
+	{% if session.logged_in %}
+	<a class="navbar-brand" href="{{ url_for('user') }}">gradebook</a>
+	{% else %}
+	<a class="navbar-brand" href="{{ url_for('home') }}">gradebook</a>
+	{% endif %}
+
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav navbar-right">
-      {% if session.logged_in %}
-      <li><a href="{{ url_for('logout') }}">Logout</a></li>
-      {% else %}
-      <li><a href="{{ url_for('teacher') }}">Teacher</a></li>
-      <li><a href="{{ url_for('student') }}">Student</a></li>
-          <li class="active"><a href="{{ url_for('about') }}">About></a></li>
-      {% endif %}
-    </ul>
+      <div class="navbar-collapse collapse navbar-responsive-collapse">
+
+	<!-- OPTIONAL: search for teacher/class 
+	  todo: take string and decipher it -->
+	<ul class="nav navbar-nav navbar-left">
+	  <input type="text" class="form-control col-lg-8" placeholder="Search for teacher or class">
+
+	<!-- depend on login status, will display different links -->
+	<ul class="nav navbar-nav navbar-right">
+	  {% if session.logged_in %}
+	  <li><a href="{{ url_for('logout') }}">Logout</a></li>
+	  {% else %}
+	  <li><a href="{{ url_for('teacher') }}">Teacher</a></li>
+	  <li><a href="{{ url_for('student') }}">Student</a></li>
+	  {% endif %}
+	  <li><a href="{{ url_for('about') }}">About></a></li>
+	</ul>
+
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
 
+  {% block bodycontent %}
+
   {% endblock bodycontent %}
 
 </body>
+
+</html>
