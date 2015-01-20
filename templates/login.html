@@ -8,23 +8,40 @@
 
 <div class="container">
 
-  <div class="panel-body form-group">
-    <form>
+  <form class="form-horizontal">
+    
+    <fieldset>
       
-      <input type="text" class="form-control" name="email" placeholder="your@emailadress.here">
-      <br>
-      <textarea class="form-control" name="password" rows="15" placeholder="password"></textarea>
-      <br>
-      <center>
-	<button type="submit" name="button_login" class="btn btn-default btn-primary">Login</button>
-      </center>
-      <center>
-	<button type="submit" name="button_register" class="btn btn-default btn-primary">Register</button>
-      </center>
-      
-    </form>
+      <div class="form-group">
+	<label for="email" class="col-lg-2 control-label">Email</label>
+	<div class="col-lg-10">
+	  <input type="email" class="form-control" id="email" placeholder="example@something.com">
+	</div>
+   	<label for="password" class="col-lg-2 control-label">Password</label>
+	<div class="col-lg-10">
+	  <input type="password" class="form-control" id="password" placeholder="password">
+	</div>
 
-  </div>
+	<!-- OPTIONAL remember me box
+	     todo: figure out how session remember me works -->
+	<div class="checkbox">
+	  <label>
+	    <input type="checkbox">Remember Me
+	  </label>
+	</div>
+	<br>
+	<div class="form-group">
+	  <div class="col-lg-10 col-lg-offest-2">
+	    <button type="register" class="btn btn-primary">Register</button>
+	    <button type="submit" class="btn btn-primary">Submit</button>
+	  </div>
+	</div>
+	
+    </fieldset>
+    
+  </form>
+  
+</div>
     
 
 {% endblock bodycontent %}
