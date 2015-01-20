@@ -14,7 +14,7 @@ def insert(email, password, name):
             'email' : email,
             'password' : password,
             'name' : name,
-            'classes' : []
+            'courses' : []
         }
         students.insert(new_user)
         return (True, "Registration successful. Enjoy!")
@@ -43,13 +43,13 @@ def validate_login(email, password):
 def get(email):
     return students.find({'email': email})
 
-def update(email, new_email=None, name=None, password=None, classes=None):
+def update(email, new_email=None, name=None, password=None, courses=None):
     if(exists(email)):
         updateDict = {}
         if new_email != None: updateDict['email'] = new_email
         if name != None: updateDict['name'] = name
         if password != None: updateDict['password'] = password
-        if classes != None: updateDict['classes'] = classes
+        if courses != None: updateDict['courses'] = courses
         students.update(
             {'email': email},
                 {'$set': updateDict}
