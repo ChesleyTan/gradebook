@@ -1,5 +1,6 @@
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
+import time
 
 def isValidEmail(email):
     valid = validate_email(email)
@@ -39,23 +40,47 @@ def isValidSchool(school):
         return (False, "Error: Name of school must be capitalized")
     return (True, "Successfully validated school name")
 
-def isValidClass(className):
-    valid = len(className) > 1
+def isValidCourse(course):
+    valid = len(course) > 1
     if not valid:
-        return (False, "Error: Name of class is too short (Fewer than 2"
+        return (False, "Error: Name of course is too short (Fewer than 2"
                 " characters)")
-    valid = len(className) < 31
+    valid = len(course) < 101
     if not valid:
-        return (False, "Error: Name of class is too long (Greater than 30"
+        return (False, "Error: Name of course is too long (Greater than 100"
                 " characters)")
-    return (True, "Successfully validated class name")
+    return (True, "Successfully validated course name")
 
-def isValidDescription(description):
+def isValidCourseDescription(description):
     valid = len(description) < 301
     if not valid:
         return (False, "Error: Description is too long (Greater than 300"
                 " characters)")
     return (True, "Successfully validated description")
+
+def isValidAssignment(assignment):
+    valid = len(assignment) > 1
+    if not valid:
+        return (False, "Error: Name of assignment is too short (Fewer than 2"
+                " characters)")
+    valid = len(assignment) < 101
+    if not valid:
+        return (False, "Error: Name of assignment is too long (Greater than 100"
+                " characters)")
+    return (True, "Successfully validated assignment name")
+
+def isValidAssignmentDescription(description):
+    valid = len(description) < 1001
+    if not valid:
+        return (False, "Error: Description is too long (Greater than 1000"
+                " characters)")
+    return (True, "Successfully validated description")
+
+def isValidDueDate(dueDate):
+    valid = time.time() < dueDate
+    if not valid:
+        return (False, "Error: Due date cannot be in the past")
+    return (True, "Successfully validated due date")
 
 def checkPassword(hashedPassword, tryPassword):
     return check_password_hash(hashedPassword, tryPassword)

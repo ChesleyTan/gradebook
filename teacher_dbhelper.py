@@ -6,6 +6,7 @@ db = client.gradebook
 teachers = db.teachers
 
 # TODO email confirmation
+# TODO check return value for insert
 def insert(email, password, name, school):
     response_tuple = isValidEmail(email)
     if not response_tuple[0]:
@@ -47,16 +48,21 @@ def update(email, new_email=None, name=None, school=None, password=None,
         response_tuple = isValidEmail(new_email)
         if not response_tuple[0]:
             return response_tuple
-    if password:
-        response_tuple = isValidPassword(password)
-        if not response_tuple[0]:
-            return response_tuple
     if name:
         response_tuple = isValidName(name)
         if not response_tuple[0]:
             return response_tuple
     if school:
         response_tuple = isValidSchool(school)
+        if not response_tuple[0]:
+            return response_tuple
+    if password:
+        response_tuple = isValidPassword(password)
+        if not response_tuple[0]:
+            return response_tuple
+    if courses:
+        for course in courses:
+            response_tuple = isValidCourse(course)
         if not response_tuple[0]:
             return response_tuple
     if(exists(email)):
@@ -71,9 +77,9 @@ def update(email, new_email=None, name=None, school=None, password=None,
             {'email': email},
                 {'$set': updateDict}
         )
-        return "Successfully updated info."
+        return (True, "Successfully updated info.")
     else:
-        return "Error: User doesn't exist!"
+        return (False, "Error: User doesn't exist!")
 
 def dump():
     for c in teachers.find():
@@ -90,7 +96,11 @@ if __name__ == "__main__":
     if not response_tuple[0]:
         print response_tuple[1]
     dump()
-    update("john@gmail.com", name="Anonymous", new_email="anonymous@gmail.com",
-            school="Hogwarts School of Witchcraft and Wizardry")
+    response_tuple = update("john@gmail.com", name="Anonymous",
+                            new_email="anonymous@gmail.com",
+                            school="Hogwarts School of Witchcraft and Wizardry",
+                            password="thisislongerthan6characters")
+    if not response_tuple[0]:
+        print response_tuple[1]
     dump()
 
