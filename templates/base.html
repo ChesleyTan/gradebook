@@ -63,5 +63,11 @@
   {% endblock bodycontent %}
 
 </body>
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="{{ url_for('static', filename='js/material.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ripples.js') }}"></script>
+{% endblock scripts %}
+
 
 </html>
