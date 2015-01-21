@@ -8,6 +8,24 @@ app = Flask(__name__)
 def index():
     return render_template("home.html")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    register = request.form['register']
+    submit = request.form['submit']
+    email = request.form['mail']
+    pword = request.form['password']
+    
+    if register and submit and email and pword:
+        # TODO
+    return render_template("login.html")
+
+@app.route("/user")
+def user():
+    return render_template("user.html")
 
 
 #======================END-DEFINITIONS======================
