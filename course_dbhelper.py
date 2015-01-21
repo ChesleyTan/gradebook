@@ -12,20 +12,22 @@ def insert(teacherId, name, description):
     response_tuple = isValidCourseDescription(description)
     if not response_tuple[0]:
         return response_tuple
-    new_courses = {
-        'teacherId' : teacherId,
-        'name' : name,
-        'description' : description,
-        'students' : []
-    }
-    courses.insert(new_courses)
-    return (True, "Successfully added new course.")
+    if not exists(teacherId, name):
+        new_courses = {
+            'teacherId' : teacherId,
+            'name' : name,
+            'description' : description,
+            'students' : []
+        }
+        courses.insert(new_courses)
+        return (True, "Successfully added new course")
+    else:
+        return (False, "Error: Course already exists")
 
-def exists(teacherId, name, description):
+def exists(teacherId, name):
     return courses.find({
                             'teacherId' : teacherId,
-                            'name' : name,
-                            'description' : description
+                            'name' : name
                         }).count() > 0
 
 def remove(teacherId, name, description):
@@ -53,7 +55,7 @@ def update(teacherId, name, description, new_teacherId=None, new_name=None,
         response_tuple = isValidCourseDescription(new_description)
         if not response_tuple[0]:
             return response_tuple
-    if(exists(teacherId, name, description)):
+    if(exists(teacherId, name)):
         updateDict = {}
         if new_teacherId != None: updateDict['teacherId'] = new_teacherId
         if new_name != None: updateDict['name'] = new_name
