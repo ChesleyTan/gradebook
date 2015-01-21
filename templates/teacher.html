@@ -34,13 +34,30 @@
 	<div class="well page" id="Message">
 	  BLAHBLAHBLAH Message stuff
 	</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- pills -->
-<ul class="nav nav-pills nav-stacked" style="max-width: 300px;">
-  <li><a href="{{ url_for('profile') }}">Profile</a></li>
-  <li><a href="{{ url_for('schedule') }}">Schedule</a></li>
-  <li><a href="{{ url_for('calender') }}">Calender</a></li>
-  <li><a href="{{ url_for('message') }}">Message</a></li>
-</ul>
+
+<div class="row">
+  <div class="col-lg-4">
+    <ul class="nav nav-pills nav-stacked" style="max-width: 300px;">
+      <li class="active"><a href="{{ url_for('profile') }}">Profile</a></li>
+      <li><a href="{{ url_for('schedule') }}">Schedule</a></li>
+      <li><a href="{{ url_for('calender') }}">Calender</a></li>
+      <li><a href="{{ url_for('message') }}">Message</a></li>
+    </ul>
+  </div>
+  <div class="col-lg-4">
+    
+    <!-- put in here name, class schedule, upcoming assignments -->
+    <div class="">
+
+  </div>
+</div>
+
+
 
 {% endblock body content %}
