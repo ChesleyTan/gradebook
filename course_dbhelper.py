@@ -1,11 +1,17 @@
 from pymongo import MongoClient
+from validation import *
 
 client = MongoClient()
 db = client.gradebook
 courses = db.courses
 
 def insert(teacherId, name, description):
-    # TODO validation for each field
+    response_tuple = isValidCourse(name)
+    if not response_tuple[0]:
+        return response_tuple
+    response_tuple = isValidCourseDescription(description)
+    if not response_tuple[0]:
+        return response_tuple
     new_courses = {
         'teacherId' : teacherId,
         'name' : name,
@@ -17,28 +23,36 @@ def insert(teacherId, name, description):
 
 def exists(teacherId, name, description):
     return courses.find({
-                                'teacherId' : teacherId,
-                                'name' : name,
-                                'description' : description
-                            }).count() > 0
-
-def remove(teacherId, name, description):
-    courses.remove({
                             'teacherId' : teacherId,
                             'name' : name,
                             'description' : description
-                       }, multi=False)
+                        }).count() > 0
+
+def remove(teacherId, name, description):
+    courses.remove({
+                        'teacherId' : teacherId,
+                        'name' : name,
+                        'description' : description
+                    }, multi=False)
 
 def removeAll(teacherId):
     courses.remove({
-                           'teacherId' : teacherId
-                       })
+                        'teacherId' : teacherId
+                    })
 
 def get(teacherId):
     return courses.find({'teacherId': teacherId})
 
 def update(teacherId, name, description, new_teacherId=None, new_name=None,
            new_description=None, new_students=None):
+    if new_name:
+        response_tuple = isValidCourse(new_name)
+        if not response_tuple[0]:
+            return response_tuple
+    if new_description:
+        response_tuple = isValidCourseDescription(new_description)
+        if not response_tuple[0]:
+            return response_tuple
     if(exists(teacherId, name, description)):
         updateDict = {}
         if new_teacherId != None: updateDict['teacherId'] = new_teacherId
@@ -53,9 +67,9 @@ def update(teacherId, name, description, new_teacherId=None, new_name=None,
             },
                 {'$set': updateDict}
         )
-        return "Successfully updated course info."
+        return (True, "Successfully updated course info.")
     else:
-        return "Update info error: Course doesn't exist!"
+        return (False, "Error: Course doesn't exist!")
 
 def dump():
     for c in courses.find():
@@ -74,11 +88,14 @@ if __name__ == "__main__":
     if not response_tuple[0]:
         print response_tuple[1]
     dump()
-    print update(1234567890, "AP Advanced Polyvariate Calculus Accelerated",
-                 "Applications of probabilistic statistical analysis with "
-                 "calculus",
-                 new_teacherId=1337, new_name="Hacking 101",
-                 new_description="0x1337B33F",
-                 new_students=["Elvin", "Junhao", "Eric", "Elmo"])
+    response_tuple = update(1234567890,
+                "AP Advanced Polyvariate Calculus Accelerated",
+                "Applications of probabilistic statistical analysis with "
+                "calculus",
+                new_teacherId=1337, new_name="Hacking 101",
+                new_description="0x1337B33F",
+                new_students=["Elvin", "Junhao", "Eric", "Elmo"])
+    if not response_tuple[0]:
+        print response_tuple[1]
     dump()
 

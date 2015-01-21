@@ -1,0 +1,5 @@
+Python Packages (pip install)
+=============================
+mongodb
+validate_email
+pyDNS
