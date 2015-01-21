@@ -21,13 +21,20 @@ def login():
     
     if register and submit and email and pword:
         # TODO
+        pass
     return render_template("login.html")
 
 @app.route("/user")
 def user():
     return render_template("user.html")
 
+@app.route("/teacher")
+def teacher():
+    return render_template("user.html")
 
+@app.route("/student")
+def student():
+    return render_template("user.html")
 #======================END-DEFINITIONS======================
 
 app.secret_key = open('session_key.txt', 'r').read().strip()

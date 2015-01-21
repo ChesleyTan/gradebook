@@ -66,8 +66,11 @@
 </body>
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://fezvrasta.github.io/snackbarjs/dist/snackbar.min.js"></script>
 <script src="{{ url_for('static', filename='js/material.js') }}"></script>
 <script src="{{ url_for('static', filename='js/ripples.js') }}"></script>
+<script>$.material.init()</script>
 {% endblock scripts %}
 
 
