@@ -12,18 +12,31 @@
     
     <fieldset>
       
+      <!-- autofill email and password based on session 
+	syntax below is probably not right at all
+	NEED TO FIX SYNTAX-->
       <div class="form-group">
 	<label for="email" class="col-lg-2 control-label">Email</label>
 	<div class="col-lg-10">
 	  <input type="email" class="form-control" id="email" placeholder="example@something.com">
+	  {% if session.remember %}
+	  {% email %}
+	  {% endif %}
 	</div>
    	<label for="password" class="col-lg-2 control-label">Password</label>
 	<div class="col-lg-10">
 	  <input type="password" class="form-control" id="password" placeholder="password">
+	  {% if session.remember %}
+	  {% password %}
+	  {% endif %}
 	</div>
 
 	<!-- OPTIONAL remember me box
-	     todo: figure out how session remember me works -->
+	     todo: figure out how session remember me works 
+	  by remember me, let's just autofill the email and password fields
+	  do this by having session remember a value,
+	  everytime the user goes to website, check value,
+	  if match, autofill fields-->
 	<div class="checkbox">
 	  <label>
 	    <input type="checkbox">Remember Me

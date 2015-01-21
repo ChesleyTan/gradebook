@@ -2,9 +2,45 @@
 
 {% block bodycontent %}
 
-test
+<!-- to do: make basic template for user website -->
 
-<!-- to do: make basic template for user website !-->
+<!-- what do we want? solid side thing or pills? 
+  solid would mean everything on one page
+  pills would mean everything a separate page -->
 
+
+<!-- solid side thing -->
+<div class="container-fluid main">
+  <div class="row">
+    <nav class="col-xs-3 menu">
+      <ul>
+	<li class="active withripple" data-target="#profile">Profile</li>
+	<li class="withripple" data-target="#schedule">Schedule</li>
+	<li class="withripple" data-target="#calender">Calender</li>
+	<li class="withripple" data-target="#message">Message</li>
+      </ul>
+    </nav>
+    <div class="pages col-xs-9">
+      <div class="col-xs-10">
+	<div class="well page active" id="profile">
+	  BLAHBLAHBLAH Profile stuff
+	</div>
+	<div class="well page" id="Schedule">
+	  BLAHBLAHBLAH Schedule stuff
+	</div>
+	<div class="well page" id="Calender">
+	  BLAHBLAHBLAH Calender stuff
+	</div>
+	<div class="well page" id="Message">
+	  BLAHBLAHBLAH Message stuff
+	</div>
+
+<!-- pills -->
+<ul class="nav nav-pills nav-stacked" style="max-width: 300px;">
+  <li><a href="{{ url_for('profile') }}">Profile</a></li>
+  <li><a href="{{ url_for('schedule') }}">Schedule</a></li>
+  <li><a href="{{ url_for('calender') }}">Calender</a></li>
+  <li><a href="{{ url_for('message') }}">Message</a></li>
+</ul>
 
 {% endblock body content %}
