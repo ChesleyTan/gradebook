@@ -24,6 +24,11 @@ def login():
         pass
     return render_template("login.html")
 
+@app.route("/logout")
+def logout():
+    session.pop('USER',None)
+    return redirect(url_for('home')
+
 @app.route("/user")
 def user():
     return render_template("user.html")
