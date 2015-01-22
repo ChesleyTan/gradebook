@@ -2,61 +2,54 @@
 
 {% block bodycontent %}
 
-<center><h1>Welcome to gradebook</h1></center>
+<h1 class="center-text">Welcome to gradebook</h1>
 <!-- make a div to hold info relevant for teachers and one for students!-->
-<h2>Create an account or log in</h2>
+<h2 class="center-text">Create an account or log in</h2>
 
 <div class="container">
 
-  <form class="form-horizontal">
-    
-    <fieldset>
-      
-      <!-- autofill email and password based on session 
-	syntax below is probably not right at all
-	NEED TO FIX SYNTAX-->
-      <div class="form-group">
-	<label for="email" class="col-lg-2 control-label">Email</label>
-	<div class="col-lg-10">
-	  <input type="email" class="form-control" id="email" placeholder="example@something.com">
-	  {% if session.remember %}
-	  {% email %}
-	  {% endif %}
-	</div>
-   	<label for="password" class="col-lg-2 control-label">Password</label>
-	<div class="col-lg-10">
-	  <input type="password" class="form-control" id="password" placeholder="password">
-	  {% if session.remember %}
-	  {% password %}
-	  {% endif %}
-	</div>
+    <form class="form-horizontal">
 
-	<!-- OPTIONAL remember me box
-	     todo: figure out how session remember me works 
-	  by remember me, let's just autofill the email and password fields
-	  do this by having session remember a value,
-	  everytime the user goes to website, check value,
-	  if match, autofill fields-->
-	<div class="checkbox">
-	  <label>
-	    <input type="checkbox">Remember Me
-	  </label>
-	</div>
-	<br>
-	<div class="form-group">
-	  <div class="col-lg-10 col-lg-offest-2">
-	    <button type="register" class="btn btn-primary">Register</button>
-	    <button type="submit" class="btn btn-primary">Submit</button>
-	  </div>
-	</div>
-	
-    </fieldset>
-    
-  </form>
-  
+        <fieldset>
+
+            <!-- autofill email and password based on session
+    syntax below is probably not right at all
+    NEED TO FIX SYNTAX-->
+            <div class="form-group">
+                <label for="email" class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-10">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="example@something.com">
+                    {% if session.remember %}
+                        {{ email }}
+                    {% endif %}
+                </div>
+                <label for="password" class="col-lg-2 control-label">Password</label>
+                <div class="col-lg-10">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="password">
+                    {% if session.remember %}
+                        {{ password }}
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    <div class="checkbox center-text">
+                        <label>
+                            <input type="checkbox">Remember Me
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button id="register" name="register" class="btn btn-primary">Register</button>
+                    <button id="submit" name="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+
+        </fieldset>
+
+    </form>
+
 </div>
-    
 
 {% endblock bodycontent %}
-    
-      
+
