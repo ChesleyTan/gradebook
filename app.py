@@ -9,7 +9,7 @@ app.secret_key = open('session_key.txt', 'r').read().strip()
 
 @app.route("/")
 def index():
-    return render_template("home.html")
+    return render_template("index.html")
 
 @app.route("/about")
 def about():
@@ -39,9 +39,8 @@ def login():
             utype = request.form['userType']
             buttonPressed = request.form['submit']
             if utype == 'teacher':
-                school = request.form['school']
                 if buttonPressed == 'register':
-                    response_tuple = teacherdb.insert(email, pword, name, school)
+                    response_tuple = teacherdb.insert(email, pword, name)
                     flash(response_tuple[1])
                     return render_template("login.html")
                 elif buttonPressed == 'submit':
@@ -78,7 +77,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop('email',None)
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @app.route("/user")
 def user():

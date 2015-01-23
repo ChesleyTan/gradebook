@@ -21,7 +21,13 @@
 .flashes li {
     padding: 5px;
 }
-/* BOOTSTRAP OVERRIDES */
+.jumbotron_description {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 9px;
+    padding-right: 9px;
+}
+/* BOOTSTRAP OVERRIDES (others are inline) */
 .navbar {
     margin-bottom: 0;
 }

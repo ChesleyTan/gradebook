@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body_content %}
+
+<div class="container">
+    <div class="jumbotron col-lg-12">
+
+    <h1 class="center-text">Welcome to Gradebook!</h1>
+    
+        <p class="jumbotron_description">
+        Here at gradebook, we aim to create a better solution to online websites for teachers and students alike. With features such as calenders to keep track of assignments and instant internet scrapping to find PDFs related to the class, gradebook offers an environment that is slick and full of useful options.
+        </p>
+
+        <p class="center-text">
+            <a class="btn btn-primary btn-raised" href="{{ url_for('login') }}">Login/Register</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock body_content %}
