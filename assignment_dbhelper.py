@@ -15,21 +15,22 @@ def insert(courseId, name, description, dueDate):
     response_tuple = isValidDueDate(dueDate)
     if not response_tuple[0]:
         return response_tuple
-    new_assignment = {
-        'courseId' : courseId,
-        'name' : name,
-        'description' : description,
-        'dueDate' : dueDate
-    }
-    assignments.insert(new_assignment)
-    return (True, "Successfully added new assignment.")
+    if not exists(courseId, name):
+        new_assignment = {
+            'courseId' : courseId,
+            'name' : name,
+            'description' : description,
+            'dueDate' : dueDate
+        }
+        assignments.insert(new_assignment)
+        return (True, "Successfully added new assignment.")
+    else:
+        return (False, "Error: Assignment already exists")
 
-def exists(courseId, name, description, dueDate):
+def exists(courseId, name):
     return assignments.find({
                                 'courseId' : courseId,
-                                'name' : name,
-                                'description' : description,
-                                'dueDate' : dueDate
+                                'name' : name
                             }).count() > 0
 
 def remove(courseId, name, description, dueDate):
@@ -62,7 +63,7 @@ def update(courseId, name, description, dueDate, new_courseId=None,
         response_tuple = isValidDueDate(new_dueDate)
         if not response_tuple[0]:
             return response_tuple
-    if(exists(courseId, name, description, dueDate)):
+    if(exists(courseId, name)):
         updateDict = {}
         if new_courseId != None: updateDict['courseId'] = new_courseId
         if new_name != None: updateDict['name'] = new_name
