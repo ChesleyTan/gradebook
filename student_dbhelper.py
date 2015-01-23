@@ -1,35 +1,32 @@
 from pymongo import MongoClient
+from validation import *
 
 client = MongoClient()
 db = client.gradebook
 students = db.students
 
-# TODO implement validation in validation.py
+# TODO email confirmation
 def insert(email, password, name):
-    # TODO hash & salt
-    # TODO validation for each field
-    # TODO email confirmation
+    response_tuple = isValidEmail(email)
+    if not response_tuple[0]:
+        return response_tuple
+    response_tuple = isValidPassword(password)
+    if not response_tuple[0]:
+        return response_tuple
+    response_tuple = isValidName(name)
+    if not response_tuple[0]:
+        return response_tuple
     if (not exists(email)):
         new_user = {
             'email' : email,
-            'password' : password,
+            'password' : generatePasswordHash(password),
             'name' : name,
-            'classes' : []
+            'courses' : []
         }
         students.insert(new_user)
-        return (True, "Registration successful. Enjoy!")
+        return (True, "Successfully registered. Enjoy!")
     else:
-        return (False, "Registration error: A user with that email already\
-                exists.")
-
-def validate_registration(email, password):
-    if (len(email) < 1):
-        return (False, "Registration error: Your email must be at least 1\
-                character long")
-    if (len(password) < 6):
-        return (False, "Registration error: Your password must be at least 6\
-                characters long")
-    return (True, "Registration successful. Enjoy!")
+        return (False, "Error: A user with that email already exists.")
 
 def exists(email):
     return students.find({'email' : email}).count() > 0
@@ -37,26 +34,41 @@ def exists(email):
 def remove(email):
     students.remove({'email' : email}, multi=False)
 
-def validate_login(email, password):
-    return students.find({'email' : email, 'password' : password}).count() == 1
-
 def get(email):
     return students.find({'email': email})
 
-def update(email, new_email=None, name=None, password=None, classes=None):
+def update(email, new_email=None, name=None, password=None, courses=None):
+    if new_email:
+        response_tuple = isValidEmail(new_email)
+        if not response_tuple[0]:
+            return response_tuple
+    if name:
+        response_tuple = isValidName(name)
+        if not response_tuple[0]:
+            return response_tuple
+    if password:
+        response_tuple = isValidPassword(password)
+        if not response_tuple[0]:
+            return response_tuple
+    if courses:
+        for course in courses:
+            response_tuple = isValidCourse(course)
+            if not response_tuple[0]:
+                return response_tuple
     if(exists(email)):
         updateDict = {}
         if new_email != None: updateDict['email'] = new_email
         if name != None: updateDict['name'] = name
-        if password != None: updateDict['password'] = password
-        if classes != None: updateDict['classes'] = classes
+        if password != None: updateDict['password'] =\
+                        generatePasswordHash(password)
+        if courses != None: updateDict['courses'] = courses
         students.update(
-            {'email': email},
+                {'email': email},
                 {'$set': updateDict}
         )
-        return "Successfully updated info."
+        return (True, "Successfully updated info.")
     else:
-        return "Update info error: User doesn't exist!"
+        return (False, "Update info error: User doesn't exist!")
 
 def dump():
     for c in students.find():
@@ -72,6 +84,10 @@ if __name__ == "__main__":
     if not response_tuple[0]:
         print response_tuple[1]
     dump()
-    update("john@gmail.com", name="Anonymous", new_email="anonymous@gmail.com")
+    response_tuple = update("john@gmail.com", name="Anonymous",
+                            new_email="anonymous@gmail.com",
+                            password="you'llneverguessthispassword")
+    if not response_tuple[0]:
+        print response_tuple[1]
     dump()
 
