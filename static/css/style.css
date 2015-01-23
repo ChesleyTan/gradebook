@@ -1,3 +1,10 @@
 .center-text {
     text-align: center;
 }
+.center-all {
+    text-align: center;
+    margin: 0 auto;
+}
+.flashes {
+    list-style-type: none;
+}

@@ -58,23 +58,30 @@
             </ul>
         </div>
     </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes center-all">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     {% block bodycontent %}
-
     {% endblock bodycontent %}
 
+    {% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- If jQuery was not loaded from CDN, use the local version -->
+    <script>window.jQuery || document.write("<script src=\"{{ url_for('static',
+    filename='js/jQuery/jquery-1.10.2.min.js') }}\"><\/script>")</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script>window.jQuery.fn.modal || document.write('<script src="/js/twitter-bootstrap/bootstrap.min.js"><\/script>')</script>
+    <script src="{{ url_for('static', filename='js/material-design-bootstrap/material.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/material-design-bootstrap/ripples.min.js') }}"></script>
+    <script>$.material.init()</script>
+    {% endblock scripts %}
 </body>
-{% block scripts %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<!-- If jQuery was not loaded from CDN, use the local version -->
-<script>window.jQuery || document.write("<script src=\"{{ url_for('static',
-filename='js/jQuery/jquery-1.10.2.min.js') }}\"><\/script>")</script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script>window.jQuery.fn.modal || document.write('<script src="/js/twitter-bootstrap/bootstrap.min.js"><\/script>')</script>
-<script src="{{ url_for('static', filename='js/material-design-bootstrap/snackbar.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/material-design-bootstrap/material.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/material-design-bootstrap/ripples.min.js') }}"></script>
-<script>$.material.init()</script>
-{% endblock scripts %}
 
 </html>
