@@ -1,6 +1,8 @@
 #!/usr/bin/python
 from flask import Flask, render_template, request, redirect, session, flash
 from functools import wraps
+import teacher_dbhelper as teacherdb
+import student_dbhelper as studentdb
 
 app = Flask(__name__)
 
@@ -16,34 +18,45 @@ def about():
 def login():
 
     if 'email' in session and rmber:
-        if escape(session['utype'])=='teacher':
-        return render_template("teacher.html", email, pword)
-    elif method='POST':
+        if escape(session['utype']) == 'teacher':
+            return render_template("teacher.html", email, pword)
+        elif escape(session['utype']) == 'student':
+            return render_template("student.html", email, pword)
+    elif request.method == 'POST':
         email = request.form['email']
         pword = request.form['password']
         name = request.form['name']
         utype = request.form['usertype']
-        if utype=='teacher':
+        register = request.form['register']
+        login = request.form['login']
+        if utype == 'teacher':
             school = request.form['school']
-
-    register = request.form['register']
-    submit = request.form['submit']
-    
-    if register:
-        if utype=='teacher':
-            if insert(email, pword, name, ):
-            flash("You have successfully register for an account")
+            if register:
+                response_tuple = teacherdb.insert(email, pword, name, school)
+                flash(response_tuple[1])
+                return render_template("login.html")
+            elif submit:
+                response_tuple = teacherdb.validate(email, pword)
+                if response_tuple[0]:
+                    return redirect(url_for('teacher'))
+                else:
+                    return redirect(url_for('login'))
+        elif utype == 'student':
+            if register:
+                response_tuple = studentdb.insert(email, pword, name)
+                flash(response_tuple[1])
+                return render_template("login.html")
+            elif submit:
+                response_tuple = studentdb.validate(email, pword)
+                if response_tuple[0]:
+                    return redirect(url_for('student'))
+                else:
+                    return redirect(url_for('login'))
         else:
-            flash("Email or password are already in use")
+            flash("Invalid request")
+            return render_template("login.html")
+    else:
         return render_template("login.html")
-    elif submit:
-        if validate(email, pword):
-            return redirect(url_for(
-            
-        
-        # TODO
-        pass
-    return render_template("login.html")
 
 @app.route("/logout")
 def logout():

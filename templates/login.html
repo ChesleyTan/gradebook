@@ -8,7 +8,7 @@
 
 <div class="container">
 
-    <form class="form-horizontal">
+    <form class="form-horizontal" method="POST" action="{{ url_for('login') }}">
 
         <fieldset>
 
@@ -41,7 +41,7 @@
             <div class="form-group">
                 <div class="col-lg-10 col-lg-offset-2">
                     <button id="register" name="register" class="btn btn-primary">Register</button>
-                    <button id="submit" name="submit" class="btn btn-primary">Submit</button>
+                    <button id="login" name="login" class="btn btn-primary">Login</button>
                 </div>
             </div>
 
