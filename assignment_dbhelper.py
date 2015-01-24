@@ -65,10 +65,10 @@ def update(courseId, name, description, dueDate, new_courseId=None,
             return response_tuple
     if(exists(courseId, name)):
         updateDict = {}
-        if new_courseId != None: updateDict['courseId'] = new_courseId
-        if new_name != None: updateDict['name'] = new_name
-        if new_description != None: updateDict['description'] = new_description
-        if new_dueDate != None: updateDict['dueDate'] = new_dueDate
+        if new_courseId: updateDict['courseId'] = new_courseId
+        if new_name: updateDict['name'] = new_name
+        if new_description: updateDict['description'] = new_description
+        if new_dueDate: updateDict['dueDate'] = new_dueDate
         assignments.update(
             {
                 'courseId': courseId,

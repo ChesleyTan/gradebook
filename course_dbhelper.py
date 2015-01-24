@@ -57,10 +57,10 @@ def update(teacherId, name, description, new_teacherId=None, new_name=None,
             return response_tuple
     if(exists(teacherId, name)):
         updateDict = {}
-        if new_teacherId != None: updateDict['teacherId'] = new_teacherId
-        if new_name != None: updateDict['name'] = new_name
-        if new_description != None: updateDict['description'] = new_description
-        if new_students != None: updateDict['students'] = new_students
+        if new_teacherId: updateDict['teacherId'] = new_teacherId
+        if new_name: updateDict['name'] = new_name
+        if new_description: updateDict['description'] = new_description
+        if new_students: updateDict['students'] = new_students
         courses.update(
             {
                 'teacherId': teacherId,

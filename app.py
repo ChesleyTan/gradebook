@@ -126,6 +126,39 @@ def teacher():
 def teacher_profile(teacher_id=None):
     return render_template('teacher.html', teacher_id=teacher_id)
 
+@app.route('/teacher/settings', methods=['GET', 'POST'])
+def teacher_settings():
+    if session.has_key('email') and\
+       session.has_key('userType') and\
+       session['userType'] == 'teacher':
+        if request.method == 'POST':
+            if request.form.has_key('name') and\
+               request.form.has_key('school') and\
+               request.form.has_key('email') and\
+               request.form.has_key('new_password') and\
+               request.form.has_key('password'):
+                response_tuple = teacherdb.validate(session['email'],
+                                      request.form['password'])
+                if response_tuple[0]:
+                    response_tuple = teacherdb.update(email=session['email'],
+                            new_email=request.form['email'],
+                            name=request.form['name'], school=request.form['school'],
+                            password=request.form['new_password'])
+                    flash(response_tuple[1])
+                else:
+                    flash(response_tuple[1])
+            else:
+                flash("Invalid request")
+                return redirect(url_for('teacher'))
+        teacher = teacherdb.get(session['email'])
+        if teacher.count() == 1:
+            teacher_data = teacher[0]
+            return render_template('teacher_settings.html',
+                    teacher_data=teacher_data)
+    # Clear session dictionary to remove invalid data
+    session.clear()
+    return redirect(url_for('index'))
+
 @app.route('/student')
 def student():
     if session.has_key('email') and\

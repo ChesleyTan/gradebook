@@ -59,14 +59,16 @@ def update(email, new_email=None, name=None, school=None, password=None,
             response_tuple = isValidCourse(course)
         if not response_tuple[0]:
             return response_tuple
-    if(exists(email)):
+    if new_email and new_email != email and exists(new_email):
+        return (False, "That email is already taken.")
+    if exists(email):
         updateDict = {}
-        if new_email != None: updateDict['email'] = new_email
-        if name != None: updateDict['name'] = name
-        if school != None: updateDict['school'] = school
-        if password != None: updateDict['password'] =\
+        if new_email: updateDict['email'] = new_email
+        if name: updateDict['name'] = name
+        if school: updateDict['school'] = school
+        if password: updateDict['password'] =\
                              generatePasswordHash(password)
-        if courses != None: updateDict['courses'] = courses
+        if courses: updateDict['courses'] = courses
         teachers.update(
             {'email': email},
                 {'$set': updateDict}

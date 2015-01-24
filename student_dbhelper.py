@@ -54,11 +54,11 @@ def update(email, new_email=None, name=None, password=None, courses=None):
                 return response_tuple
     if(exists(email)):
         updateDict = {}
-        if new_email != None: updateDict['email'] = new_email
-        if name != None: updateDict['name'] = name
-        if password != None: updateDict['password'] =\
+        if new_email: updateDict['email'] = new_email
+        if name: updateDict['name'] = name
+        if password: updateDict['password'] =\
                         generatePasswordHash(password)
-        if courses != None: updateDict['courses'] = courses
+        if courses: updateDict['courses'] = courses
         students.update(
                 {'email': email},
                 {'$set': updateDict}

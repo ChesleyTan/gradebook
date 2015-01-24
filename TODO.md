@@ -1,6 +1,7 @@
 * class management
 * assignment management
 * setting page
+* profile page
 * home page feed
 * messaging system
 * email
