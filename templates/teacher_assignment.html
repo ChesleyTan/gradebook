@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+<li><a href="{{ url_for('teacher') }}">Home</a></li>
+<li><a href="{{ url_for('teacher_profile', teacher_id=teacher_data['_id']) }}">Profile</a></li>
+<li class="active"><a href="#">Courses</a></li>
+<li><a href="{{ url_for('messages') }}">Messages</a></li>
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li><a href="{{ url_for('teacher_settings') }}">Settings</a></li>
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block bodycontent %}
+<div class="container">
+  <h1>Ongoing Assignments</h1>
+  {% for assignment in assignments %}
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ assignment['name'] }}</h3>
+    </div>
+    <div class="panel-body">
+      <span>
+	<p>{{ assignment['description'] }}</p>
+      </span>
+      <span style="font-weight:bold">
+	Due: {{ assignment['due'] }}
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+  <form id='form' class="form-horizontal" method="POST" action="{{ url_for('teacher_assignments') }}">
+    <fieldset>
+      <h1>Add an assignment</h1>
+      <div class="form-grou">
+	<label for="name" class="col-lg-2 control-label">Course Name</label>
+	<div class="form-group">
+	  <input type="text" class="form-control" id="name" name="name" placeholder="Assignment Name" pattern=".{2,100}">
+	</div>
+	<label for="description" class="col-lg-2 control-label">Description</label>
+	<div class="col-lg-10">
+	  <textarea class="form-control" id="description" name="description" maxlength="300"></textarea>
+	</div>
+	<label for="description" class="col-lg-2 control-label">Due Date</label>
+	<div class="form-group">
+	  <input type="text" class="form-control" id="date" name="date" placeholder="01/01/01" pattern=".{2,100}">
+	</div>
+      </div>
+      <h1>Delete an Assignment</h1>
+      <div class="form-group">
+        <label for="name" class="col-lg-2 control-label">Assignment Name</label>
+        <div class="col-lg-10">
+          <input type="text" class="form-control" id="delete_name" name="delete_name" placeholder="Assignment Name" pattern=".{2,100}">
+        </div>
+      </div>
+      <br/>
+      <br/>
+      <div class="form-group">
+	<label for="password" class="col-lg-2 control-label">Verify Password</label> 
+	<div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" pattern=".{6,50}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-lg-12 center-text">
+          <button id="add" name="submit" value="add" class="btn btn-primary">Add</button>
+	  <button id="delete" name="submit" value="delete" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+	
+	
+
+
+<!-- trying script stuff 
+  you know how when you hover over an element, a source code button appears
+  I want to do that but to delete the assignment-->
+
+<!--
+
+<div id="delete-modal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+	<h4 class="modal-title">Delete Assignment</h4>
+      </div>
+      <div class="modal-body">
+
+	<pre></pre>
+	<form id='form' class="form-horizontal" method="POST" action="{{ url_for('teacher_assignment') }}">
+	  <fieldset>
+	    <div class="form-group">
+	      <label for="password" class="col-lg-2 control-label">Verify Password</label>
+	      <div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" patter=".{6,50}" required>
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <div class="col-lg-12 center-text">
+		<button id="delete" name="submit" value="delete"  class="btn btn-warning">Delete</button>
+	      </div>
+	    </div>
+	  </fieldset>
+	</form>
+	    
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+
+  var $button = $("<div id='delete-button' class='btn btn-primary btn-xs'>&lt; &gt;</div>").click(function(){
+  var index = $('.bs-component').index( $(this.parent() );
+  $.get(windonw.location.href, function() {
+  var info = "Are you sure you want to delete this assignment"
+  $("#delete-modal pre").text(info);
+  $("#source-modal").modal();
+  });
+  });
+  
+  $(".bs-component").hover(function(){
+  $(this.append($button);
+  $button.show();
+  }, function(){
+  $button.hide();
+  });
+
+  }) ();
+</script>
+
+-->
+
+{% endblock bodycontent%}
+{% block scripts %}
+{% endblock scripts %}
