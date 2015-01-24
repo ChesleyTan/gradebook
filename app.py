@@ -35,43 +35,28 @@ def login():
     if request.method == 'POST':
         if request.form.has_key('email') and\
            request.form.has_key('password') and\
-           request.form.has_key('userType') and\
-           request.form.has_key('submit'):
+           request.form.has_key('userType'):
             email = request.form['email']
             pword = request.form['password']
             utype = request.form['userType']
-            buttonPressed = request.form['submit']
             if utype == 'teacher':
-                if buttonPressed == 'register':
-                    response_tuple = teacherdb.insert(email, pword)
-                    flash(response_tuple[1])
-                    return render_template('login.html')
-                elif buttonPressed == 'login':
-                    response_tuple = teacherdb.validate(email, pword)
-                    flash(response_tuple[1])
-                    if response_tuple[0]:
-                        session['email'] = email
-                        session['userType'] = 'teacher'
-                        return redirect(url_for('teacher'))
-                    else:
-                        return redirect(url_for('login'))
+                response_tuple = teacherdb.validate(email, pword)
+                flash(response_tuple[1])
+                if response_tuple[0]:
+                    session['email'] = email
+                    session['userType'] = 'teacher'
+                    return redirect(url_for('teacher'))
                 else:
-                    flash("Invalid request")
-                    return render_template('login.html')
+                    return redirect(url_for('login'))
             elif utype == 'student':
-                if buttonPressed == 'register':
-                    response_tuple = studentdb.insert(email, pword)
-                    flash(response_tuple[1])
-                    return render_template('login.html')
-                elif buttonPressed == 'login':
-                    response_tuple = studentdb.validate(email, pword)
-                    flash(response_tuple[1])
-                    if response_tuple[0]:
-                        session['email'] = email
-                        session['userType'] = 'student'
-                        return redirect(url_for('student'))
-                    else:
-                        return redirect(url_for('login'))
+                response_tuple = studentdb.validate(email, pword)
+                flash(response_tuple[1])
+                if response_tuple[0]:
+                    session['email'] = email
+                    session['userType'] = 'student'
+                    return redirect(url_for('student'))
+                else:
+                    return redirect(url_for('login'))
             else: # userType field is invalid
                 flash("Invalid request")
                 return render_template('login.html')
@@ -80,6 +65,39 @@ def login():
             return render_template('login.html')
     else: # Request is not POST
         return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+@redirect_if_logged_in
+def register():
+    if request.method == 'POST':
+        if request.form.has_key('email') and\
+           request.form.has_key('password') and\
+           request.form.has_key('userType'):
+            email = request.form['email']
+            pword = request.form['password']
+            utype = request.form['userType']
+            if utype == 'teacher':
+                response_tuple = teacherdb.insert(email, pword)
+                flash(response_tuple[1])
+                if response_tuple[0]:
+                    return redirect(url_for('login'))
+                else:
+                    return render_template('register.html')
+            elif utype == 'student':
+                response_tuple = studentdb.insert(email, pword)
+                flash(response_tuple[1])
+                if response_tuple[0]:
+                    return redirect(url_for('login'))
+                else:
+                    return render_template('register.html')
+            else: # userType field is invalid
+                flash("Invalid request")
+                return render_template('register.html')
+        else: # Request is missing fields
+            flash("Invalid request")
+            return render_template('register.html')
+    else: # Request is not POST
+        return render_template('register.html')
 
 @app.route('/logout')
 def logout():

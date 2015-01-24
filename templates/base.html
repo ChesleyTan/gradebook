@@ -47,7 +47,6 @@
     {% block body_content %}
     {% endblock body_content %}
 
-    {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- If jQuery was not loaded from CDN, use the local version -->
     <script>window.jQuery || document.write("<script src=\"{{ url_for('static',
@@ -57,6 +56,7 @@
     <script src="{{ url_for('static', filename='js/material-design-bootstrap/material.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/material-design-bootstrap/ripples.min.js') }}"></script>
     <script>$.material.init()</script>
+    {% block scripts %}
     {% endblock scripts %}
 </body>
 
