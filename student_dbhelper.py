@@ -6,21 +6,18 @@ db = client.gradebook
 students = db.students
 
 # TODO email confirmation
-def insert(email, password, name):
+def insert(email, password):
     response_tuple = isValidEmail(email)
     if not response_tuple[0]:
         return response_tuple
     response_tuple = isValidPassword(password)
     if not response_tuple[0]:
         return response_tuple
-    response_tuple = isValidName(name)
-    if not response_tuple[0]:
-        return response_tuple
     if (not exists(email)):
         new_user = {
             'email' : email,
             'password' : generatePasswordHash(password),
-            'name' : name,
+            'name' : '',
             'courses' : []
         }
         students.insert(new_user)
@@ -76,6 +73,15 @@ def dump():
 
 def drop():
     students.remove()
+
+def validate(email, tryPassword):
+    student = get(email)
+    isValid = student.count() != 0
+    if isValid:
+        isValid = checkPassword(student[0]['password'], tryPassword)
+        if isValid:
+            return (True, "Successfully logged in!")
+    return (False, "Email or password is incorrect.")
 
 ########## TESTING ##########
 if __name__ == "__main__":

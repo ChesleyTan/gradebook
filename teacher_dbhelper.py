@@ -7,25 +7,19 @@ teachers = db.teachers
 
 # TODO email confirmation
 # TODO check return value for insert
-def insert(email, password, name, school):
+def insert(email, password):
     response_tuple = isValidEmail(email)
     if not response_tuple[0]:
         return response_tuple
     response_tuple = isValidPassword(password)
     if not response_tuple[0]:
         return response_tuple
-    response_tuple = isValidName(name)
-    if not response_tuple[0]:
-        return response_tuple
-    response_tuple = isValidSchool(school)
-    if not response_tuple[0]:
-        return response_tuple
     if (not exists(email)):
         new_user = {
             'email' : email,
             'password' : generatePasswordHash(password),
-            'name' : name,
-            'school' : school,
+            'name' : '',
+            'school' : '',
             'courses' : []
         }
         teachers.insert(new_user)
@@ -87,6 +81,15 @@ def dump():
 
 def drop():
     teachers.remove()
+
+def validate(email, tryPassword):
+    teacher = get(email)
+    isValid = teacher.count() != 0
+    if isValid:
+        isValid = checkPassword(teacher[0]['password'], tryPassword)
+        if isValid:
+            return (True, "Successfully logged in!")
+    return (False, "Email or password is incorrect.")
 
 ########## TESTING ##########
 if __name__ == "__main__":
