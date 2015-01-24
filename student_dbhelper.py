@@ -91,7 +91,6 @@ def validate(email, tryPassword):
 def hasCourse(email, courseId):
     student = get(email)
     if student.count() == 1:
-        student = student[0]
         return courseId in student[0]['courses']
     return False
 

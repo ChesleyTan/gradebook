@@ -90,7 +90,6 @@ def addCourseId(email, courseId):
     if teacher.count() == 1:
         courses = teacher[0]['courses']
         courses.append(courseId)
-        print courses
         teachers.update(
             {'email' : email},
             {'$set': {
@@ -127,12 +126,18 @@ def drop():
 
 def validate(email, tryPassword):
     teacher = get(email)
-    isValid = teacher.count() != 0
+    isValid = teacher.count() == 1
     if isValid:
         isValid = checkPassword(teacher[0]['password'], tryPassword)
         if isValid:
             return (True, "Successfully logged in!")
     return (False, "Email or password is incorrect.")
+
+def hasCourse(email, courseId):
+    teacher = get(email)
+    if teacher.count() == 1:
+        return courseId in teacher[0]['courses']
+    return False
 
 ########## TESTING ##########
 if __name__ == "__main__":

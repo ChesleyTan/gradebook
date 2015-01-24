@@ -10,6 +10,20 @@
 <div class="container">
     <br/>
     <div class="col-md-12 center-all">
+    <h2>Name</h2>
+    <span id="name">{{ course_data['name'] }}</span>
+    <br/>
+    <h2>Description</h2>
+    <p id="description">{{ course_data['description'] }}</p>
+    <h2>Teacher</h2>
+    <a id="teacher" href="{{ url_for('teacher_profile', teacher_id=course_data['teacherId']) }}">{{ teacher }}</a>
+    <br/>
+    <h2>Students</h2>
+    <ul>
+    {% for student in course_data['students'] %}
+        <li>{{ student }}</li>
+    {% endfor %}
+
     </div>
 </div>
 {% endblock body_content %}

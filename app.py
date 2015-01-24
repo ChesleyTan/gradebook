@@ -379,16 +379,27 @@ def course(course_id=None):
         # Check that user has permission to view the course
         hasPermissionToView = False
         if session['userType'] == 'student':
-            # check if the course_id is in student['courses']
-            pass
+            hasPermissionToView = studentdb.hasCourse(session['email'],
+                                                      course_id)
         elif session['userType'] == 'teacher':
-            # check if the course_id is in teacher['courses']
-            pass
-        # Fetch the info for the course(name, description, assignments,
-        # students, teacher)
-        return render_template('course.html')
-    else:
-        return redirect(url_for('index'))
+            hasPermissionToView = teacherdb.hasCourse(session['email'],
+                                                      course_id)
+        if hasPermissionToView:
+            course = coursedb.get(course_id)
+            if course and course.count() == 1:
+                course = course[0]
+                teacher = teacherdb.get('', teacher_id=course['teacherId'])
+                if teacher and teacher.count() == 1:
+                    teacher = teacher[0]['name']
+                    students = []
+                    for studentId in course['students']:
+                        student = studentdb.get('', student_id=studentId)
+                        if student and student.count() == 1:
+                            students.append(student[0]['name'])
+                    #TODO get assignments
+                    return render_template('course.html', course_data=course,
+                            teacher=teacher, students=students)
+    return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def page_not_found(e):
