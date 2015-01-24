@@ -17,6 +17,7 @@ def redirect_if_logged_in(func):
             elif session['userType'] == 'student':
                 return redirect(url_for('student'))
             else:
+                session.clear()
                 return redirect(url_for('index'))
         return func(*args, **kwargs)
     return inner
@@ -132,6 +133,7 @@ def register():
 def logout():
     session.clear()
     flash("Sucessfully logged out.")
+    return redirect(url_for('index'))
 
 @app.route('/teacher')
 @redirect_if_not_logged_in
@@ -140,6 +142,9 @@ def teacher():
     teacher = teacherdb.get(session['email'])
     if teacher.count() == 1:
         return render_template('teacher.html', teacher_id=teacher[0]['_id'])
+    else:
+        session.clear()
+        return redirect(url_for('index'))
 
 @app.route('/teacher/profile/<teacher_id>')
 @redirect_if_not_logged_in
@@ -200,17 +205,17 @@ def teacher_courses():
                                         request.form['name'],
                                         request.form['description'])
                     if response_tuple[0]:
-                        new_course_id = coursedb.getByTeacher(teacher['_id'],
-                                        name=request.form['name'])[0]['_id']
-                        teacherdb.addCourseId(session['email'], new_course_id)
+                        new_course_id = str(coursedb.getByTeacher(teacher['_id'],
+                                        name=request.form['name'])[0]['_id'])
+                        response_tuple = teacherdb.addCourseId(session['email'], new_course_id)
                     flash(response_tuple[1])
                     return redirect(url_for('teacher_courses'))
                 elif request.form['submit'] == 'delete':
                     teacher = teacherdb.get(session['email'])[0]
                     if coursedb.exists(teacher['_id'],
                             request.form['delete_name']):
-                        course_id = coursedb.getByTeacher(teacher['_id'],
-                                name=request.form['delete_name'])[0]['_id']
+                        course_id = str(coursedb.getByTeacher(teacher['_id'],
+                                name=request.form['delete_name'])[0]['_id'])
                         coursedb.remove(teacher['_id'],
                                         request.form['delete_name'])
                         teacherdb.removeCourseId(session['email'], course_id)
@@ -302,6 +307,13 @@ def messages():
 def course(course_id=None):
     if course_id:
         # Check that user has permission to view the course
+        hasPermissionToView = False
+        if session['userType'] == 'student':
+            # check if the course_id is in student['courses']
+            pass
+        elif session['userType'] == 'teacher':
+            # check if the course_id is in teacher['courses']
+            pass
         # Fetch the info for the course(name, description, assignments,
         # students, teacher)
         return render_template('course.html')
