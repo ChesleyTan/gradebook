@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block body_content %}
+<div class="container">
+    <br/>
+    <div class="col-md-12 center-all">
+    </div>
+</div>
+{% endblock body_content %}
+{% block scripts %}
+{% endblock scripts %}

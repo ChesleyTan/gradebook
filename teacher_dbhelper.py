@@ -36,8 +36,11 @@ def remove(email):
 
 def get(email, teacher_id=None):
     if teacher_id:
-        id = ObjectId(teacher_id)
-        return teachers.find({'_id': id})
+        try:
+            id = ObjectId(teacher_id)
+            return teachers.find({'_id': id})
+        except:
+            return None
     else:
         return teachers.find({'email': email})
 
