@@ -124,7 +124,12 @@ def teacher():
 
 @app.route('/teacher/profile/<teacher_id>')
 def teacher_profile(teacher_id=None):
-    return render_template('teacher.html', teacher_id=teacher_id)
+    if teacher_id:
+        teacher = teacherdb.get("", teacher_id)
+        if teacher.count() == 1:
+            teacher_data = teacher[0]
+            return render_template('teacher_profile.html', teacher_data=teacher_data)
+    return redirect(url_for('teacher'))
 
 @app.route('/teacher/settings', methods=['GET', 'POST'])
 def teacher_settings():
@@ -173,7 +178,12 @@ def student():
 
 @app.route('/student/profile/<student_id>')
 def student_profile(student_id=None):
-    return render_template('student.html', student_id=student_id)
+    if student_id:
+        student = studentdb.get("", student_id)
+        if student.count() == 1:
+            student_data = student[0]
+            return render_template('student_profile.html', student_data=student_data)
+    return redirect(url_for('student'))
 
 @app.route('/student/settings', methods=['GET', 'POST'])
 def student_settings(student_id=None):

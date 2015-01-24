@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+<li><a href="{{ url_for('teacher') }}">Home</a></li>
+<li class="active"><a href="#">Profile</a></li>
+<li><a href="{{ url_for('messages') }}">Messages</a></li>
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li><a href="{{ url_for('teacher_settings') }}">Settings</a></li>
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block body_content %}
+<div class="container">
+    <br/>
+    <div class="col-md-12 center-all">
+        {% if teacher_data['name'] != '' %}
+        <label for="name">Name</label>
+        <span id="name">{{ teacher_data['name'] }}</span>
+        {% endif %}
+        <br/>
+        {% if teacher_data['email'] != '' %}
+        <label for="email">Email</label>
+        <span id="email">{{ teacher_data['email'] }}</span>
+        {% endif %}
+        <br/>
+        {% if teacher_data['school'] != '' %}
+        <label for="school">School</label>
+        <span id="school">{{ teacher_data['school'] }}</span>
+        {% endif %}
+    </div>
+</div>
+{% endblock body_content %}
+{% block scripts %}
+{% endblock scripts %}

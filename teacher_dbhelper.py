@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from validation import *
 
 client = MongoClient()
@@ -33,8 +34,12 @@ def exists(email):
 def remove(email):
     teachers.remove({'email' : email}, multi=False)
 
-def get(email):
-    return teachers.find({'email': email})
+def get(email, teacher_id=None):
+    if teacher_id:
+        id = ObjectId(teacher_id)
+        return teachers.find({'_id': id})
+    else:
+        return teachers.find({'email': email})
 
 def update(email, new_email=None, name=None, school=None, password=None,
            courses=None):
