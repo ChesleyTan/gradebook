@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from validation import *
 
 client = MongoClient()
@@ -30,11 +31,10 @@ def exists(teacherId, name):
                             'name' : name
                         }).count() > 0
 
-def remove(teacherId, name, description):
+def remove(teacherId, name):
     courses.remove({
                         'teacherId' : teacherId,
-                        'name' : name,
-                        'description' : description
+                        'name' : name
                     }, multi=False)
 
 def removeAll(teacherId):
@@ -42,8 +42,14 @@ def removeAll(teacherId):
                         'teacherId' : teacherId
                     })
 
-def get(teacherId):
-    return courses.find({'teacherId': teacherId})
+def get(courseObjectId):
+    return courses.find({'_id': courseObjectId})
+
+def getByTeacher(teacherId, name=None):
+    if name:
+        return courses.find({'teacherId': teacherId, 'name': name})
+    else:
+        return courses.find({'teacherId': teacherId})
 
 def update(teacherId, name, description, new_teacherId=None, new_name=None,
            new_description=None, new_students=None):

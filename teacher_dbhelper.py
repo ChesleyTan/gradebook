@@ -82,6 +82,38 @@ def update(email, new_email=None, name=None, school=None, password=None,
     else:
         return (False, "Error: User doesn't exist!")
 
+def addCourseId(email, courseId):
+    teacher = teachers.find({'email' : email})
+    if teacher.count() == 1:
+        courses = teacher[0]['courses']
+        courses.append(courseId)
+        teachers.update(
+            {'email' : email},
+            {'$set': {
+                'courses' : courses
+                }
+            }
+        )
+        return (True, "Sucessfully updated courses.")
+    else:
+        return (False, "Error: User doesn't exist!")
+
+def removeCourseId(email, courseObjectId):
+    teacher = teachers.find({'email' : email})
+    if teacher.count() == 1:
+        courses = teacher[0]['courses']
+        courses.remove(courseObjectId)
+        teachers.update(
+            {'email' : email},
+            {'$set': {
+                'courses' : courses
+                }
+            }
+        )
+        return (True, "Sucessfully updated courses.")
+    else:
+        return (False, "Error: User doesn't exist!")
+
 def dump():
     for c in teachers.find():
         print c

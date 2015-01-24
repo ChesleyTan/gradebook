@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, session, flash, url
 from functools import wraps
 import teacher_dbhelper as teacherdb
 import student_dbhelper as studentdb
+import course_dbhelper as coursedb
 
 app = Flask(__name__)
 app.secret_key = open('session_key.txt', 'r').read().strip()
@@ -127,8 +128,8 @@ def teacher_profile(teacher_id=None):
     if teacher_id:
         teacher = teacherdb.get("", teacher_id)
         if teacher.count() == 1:
-            teacher_data = teacher[0]
-            return render_template('teacher_profile.html', teacher_data=teacher_data)
+            return render_template('teacher_profile.html',
+                                    teacher_data=teacher[0])
     return redirect(url_for('teacher'))
 
 @app.route('/teacher/settings', methods=['GET', 'POST'])
@@ -164,6 +165,70 @@ def teacher_settings():
     session.clear()
     return redirect(url_for('index'))
 
+@app.route('/teacher/courses', methods=['GET', 'POST'])
+def teacher_courses():
+    if session.has_key('email') and\
+       session.has_key('userType') and\
+       session['userType'] == 'teacher':
+        if request.method == 'POST':
+            if request.form.has_key('name') and\
+               request.form.has_key('description') and\
+               request.form.has_key('delete_name') and\
+               request.form.has_key('submit') and\
+               request.form.has_key('password'):
+                response_tuple = teacherdb.validate(session['email'],
+                                    request.form['password'])
+                if response_tuple[0]:
+                    if request.form['submit'] == 'add':
+                        teacher = teacherdb.get(session['email'])[0]
+                        response_tuple = coursedb.insert(teacher['_id'],
+                                            request.form['name'],
+                                            request.form['description'])
+                        if response_tuple[0]:
+                            new_course_id = coursedb.getByTeacher(teacher['_id'],
+                                            name=request.form['name'])[0]['_id']
+                            teacherdb.addCourseId(session['email'], new_course_id)
+                        flash(response_tuple[1])
+                        return redirect(url_for('teacher_courses'))
+                    elif request.form['submit'] == 'delete':
+                        teacher = teacherdb.get(session['email'])[0]
+                        if coursedb.exists(teacher['_id'],
+                                request.form['delete_name']):
+                            course_id = coursedb.getByTeacher(teacher['_id'],
+                                    name=request.form['delete_name'])[0]['_id']
+                            coursedb.remove(teacher['_id'],
+                                            request.form['delete_name'])
+                            teacherdb.removeCourseId(session['email'], course_id)
+                            flash("Successfully removed course")
+                        else:
+                            flash("Error: Course not found")
+                        return redirect(url_for('teacher_courses'))
+                    else:
+                        flash("Invalid request")
+                        return redirect(url_for('teacher_courses'))
+                else:
+                    flash(response_tuple[1])
+                    return redirect(url_for('teacher_courses'))
+            else:
+                flash("Invalid request")
+                return redirect(url_for('teacher_courses'))
+        else:
+            teacher = teacherdb.get(session['email'])
+            if teacher.count() == 1:
+                teacher_data = teacher[0]
+                courses = []
+                for courseId in teacher_data['courses']:
+                    course_cursor = coursedb.get(courseId)
+                    if course_cursor.count() == 1:
+                        courses.append(course_cursor[0])
+                    else:
+                        # Teacher's courses list has a stale entry, so delete it
+                        teacherdb.removeCourseId(session['email'], courseId)
+                return render_template('teacher_courses.html',
+                                        teacher_data=teacher[0],
+                                        courses=courses)
+    return redirect(url_for('index'))
+
 @app.route('/student')
 def student():
     if session.has_key('email') and\
@@ -181,8 +246,8 @@ def student_profile(student_id=None):
     if student_id:
         student = studentdb.get("", student_id)
         if student.count() == 1:
-            student_data = student[0]
-            return render_template('student_profile.html', student_data=student_data)
+            return render_template('student_profile.html',
+                                    student_data=student[0])
     return redirect(url_for('student'))
 
 @app.route('/student/settings', methods=['GET', 'POST'])
