@@ -140,7 +140,7 @@ def teacher_settings():
                 response_tuple = teacherdb.validate(session['email'],
                                       request.form['password'])
                 if response_tuple[0]:
-                    response_tuple = teacherdb.update(email=session['email'],
+                    response_tuple = teacherdb.update(session['email'],
                             new_email=request.form['email'],
                             name=request.form['name'], school=request.form['school'],
                             password=request.form['new_password'])
@@ -174,6 +174,38 @@ def student():
 @app.route('/student/profile/<student_id>')
 def student_profile(student_id=None):
     return render_template('student.html', student_id=student_id)
+
+@app.route('/student/settings', methods=['GET', 'POST'])
+def student_settings(student_id=None):
+    if session.has_key('email') and\
+       session.has_key('userType') and\
+       session['userType'] == 'student':
+        if request.method == 'POST':
+            if request.form.has_key('name') and\
+               request.form.has_key('email') and\
+               request.form.has_key('new_password') and\
+               request.form.has_key('password'):
+                response_tuple = studentdb.validate(session['email'],
+                                      request.form['password'])
+                if response_tuple[0]:
+                    response_tuple = studentdb.update(session['email'],
+                            new_email=request.form['email'],
+                            name=request.form['name'],
+                            password=request.form['new_password'])
+                    flash(response_tuple[1])
+                else:
+                    flash(response_tuple[1])
+            else:
+                flash("Invalid request")
+                return redirect(url_for('student'))
+        student = studentdb.get(session['email'])
+        if student.count() == 1:
+            student_data = student[0]
+            return render_template('student_settings.html',
+                    student_data=student_data)
+    # Clear session dictionary to remove invalid data
+    session.clear()
+    return redirect(url_for('index'))
 
 @app.route('/messages')
 def messages():
