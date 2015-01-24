@@ -27,6 +27,14 @@
     padding-left: 9px;
     padding-right: 9px;
 }
+.no-select {
+    user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
 /* BOOTSTRAP OVERRIDES (others are inline) */
 .navbar {
     margin-bottom: 0;

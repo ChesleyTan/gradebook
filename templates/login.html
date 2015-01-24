@@ -2,16 +2,12 @@
 
 {% block body_content %}
 
-<h1 class="center-text">Log In or Register</h2>
+<h1 class="center-text no-select">Log In or Register</h2>
 
 <div class="container">
     <form class="form-horizontal" method="POST" action="{{ url_for('login') }}">
         <fieldset>
             <div class="form-group">
-                <label for="name" class="col-lg-2 control-label">Name</label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Your Name">
-                </div>
                 <label for="email" class="col-lg-2 control-label">Email</label>
                 <div class="col-lg-10">
                     <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com">

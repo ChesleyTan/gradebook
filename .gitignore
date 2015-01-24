@@ -1,3 +1,4 @@
+*.swp
 # Flask session key
 session_key.txt
 

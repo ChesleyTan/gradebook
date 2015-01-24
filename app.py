@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, url_for
 from functools import wraps
 import teacher_dbhelper as teacherdb
 import student_dbhelper as studentdb
@@ -7,91 +7,133 @@ import student_dbhelper as studentdb
 app = Flask(__name__)
 app.secret_key = open('session_key.txt', 'r').read().strip()
 
-@app.route("/")
+def redirect_if_logged_in(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        if session.has_key('email') and session.has_key('userType'):
+            if session['userType'] == 'teacher':
+                return redirect(url_for('teacher'))
+            elif session['userType'] == 'student':
+                return redirect(url_for('student'))
+            else:
+                return redirect(url_for('index'))
+        return func()
+    return inner
+
+@app.route('/')
+@redirect_if_logged_in
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/about")
+@app.route('/about')
 def about():
-    return render_template("about.html")
+    return render_template('about.html')
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
+@redirect_if_logged_in
 def login():
-    if 'email' in session:
-        if session['userType'] == 'teacher':
-            # TODO get user's email and pword
-            return render_template("teacher.html", email, pword)
-        elif session['userType'] == 'student':
-            # TODO get user's email and pword
-            return render_template("student.html", email, pword)
-        else:
-            # Error Handle
-            pass
-    elif request.method == 'POST':
+    if request.method == 'POST':
         if request.form.has_key('email') and\
            request.form.has_key('password') and\
-           request.form.has_key('name') and\
            request.form.has_key('userType') and\
            request.form.has_key('submit'):
             email = request.form['email']
             pword = request.form['password']
-            name = request.form['name']
             utype = request.form['userType']
             buttonPressed = request.form['submit']
             if utype == 'teacher':
                 if buttonPressed == 'register':
-                    response_tuple = teacherdb.insert(email, pword, name)
+                    response_tuple = teacherdb.insert(email, pword)
                     flash(response_tuple[1])
-                    return render_template("login.html")
-                elif buttonPressed == 'submit':
+                    return render_template('login.html')
+                elif buttonPressed == 'login':
                     response_tuple = teacherdb.validate(email, pword)
                     flash(response_tuple[1])
                     if response_tuple[0]:
+                        session['email'] = email
+                        session['userType'] = 'teacher'
                         return redirect(url_for('teacher'))
                     else:
                         return redirect(url_for('login'))
                 else:
                     flash("Invalid request")
-                    return render_template("login.html")
+                    return render_template('login.html')
             elif utype == 'student':
                 if buttonPressed == 'register':
-                    response_tuple = studentdb.insert(email, pword, name)
+                    response_tuple = studentdb.insert(email, pword)
                     flash(response_tuple[1])
-                    return render_template("login.html")
-                elif buttonPressed == 'submit':
+                    return render_template('login.html')
+                elif buttonPressed == 'login':
                     response_tuple = studentdb.validate(email, pword)
                     flash(response_tuple[1])
                     if response_tuple[0]:
+                        session['email'] = email
+                        session['userType'] = 'student'
                         return redirect(url_for('student'))
                     else:
                         return redirect(url_for('login'))
             else: # userType field is invalid
                 flash("Invalid request")
-                return render_template("login.html")
+                return render_template('login.html')
         else: # Request is missing fields
             flash("Invalid request")
-            return render_template("login.html")
+            return render_template('login.html')
     else: # Request is not POST
-        return render_template("login.html")
+        return render_template('login.html')
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
-    session.pop('email',None)
+    if session.has_key('email'):
+        session.clear()
+        flash("Sucessfully logged out.")
     return redirect(url_for('index'))
 
-@app.route("/user")
+@app.route('/user')
 def user():
-    return render_template("user.html")
+    return render_template('user.html')
 
-@app.route("/teacher")
+@app.route('/teacher')
 def teacher():
-    return render_template("user.html")
+    if session.has_key('email') and\
+       session.has_key('userType') and\
+       session['userType'] == 'teacher':
+        teacher = teacherdb.get(session['email'])
+        if teacher.count() == 1:
+            return render_template('teacher.html', teacher_id=teacher[0]['_id'])
+    # Clear session dictionary to remove invalid data
+    session.clear()
+    return redirect(url_for('index'))
 
-@app.route("/student")
+@app.route('/teacher/profile/<teacher_id>')
+def teacher_profile(teacher_id=None):
+    return render_template('teacher.html', teacher_id=teacher_id)
+
+@app.route('/student')
 def student():
-    return render_template("user.html")
+    if session.has_key('email') and\
+       session.has_key('userType') and\
+       session['userType'] == 'student':
+        student = studentdb.get(session['email'])
+        if student.count() == 1:
+            return render_template('student.html', student_id=student[0]['_id'])
+    # Clear session dictionary to remove invalid data
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/student/profile/<student_id>')
+def student_profile(student_id=None):
+    return render_template('student.html', student_id=student_id)
+
+@app.route('/messages')
+def messages():
+    return render_template('index.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return "Sorry, nothing at this URL.", 404
+
 #======================END-DEFINITIONS======================
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.debug=True
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0')
