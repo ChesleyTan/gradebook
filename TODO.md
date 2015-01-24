@@ -1,2 +1,7 @@
-* login.html - make input fields required
-* teacher and student pages, if no name associated, have them input one
+* class management
+* assignment management
+* setting page
+* home page feed
+* messaging system
+* email
+* update tests for db helpers

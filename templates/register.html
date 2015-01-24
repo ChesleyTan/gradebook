@@ -2,10 +2,10 @@
 
 {% block body_content %}
 
-<h1 class="center-text no-select">Log In</h2>
+<h1 class="center-text no-select">Register</h2>
 
 <div class="container">
-    <form id='form' class="form-horizontal" method="POST" action="{{ url_for('login') }}">
+    <form id='form' class="form-horizontal" method="POST" action="{{ url_for('register') }}">
         <fieldset>
             <div class="form-group">
                 <label for="email" class="col-lg-2 control-label">Email</label>
@@ -15,6 +15,10 @@
                 <label for="password" class="col-lg-2 control-label">Password</label>
                 <div class="col-lg-10">
 <input type="password" class="form-control" id="password" name="password" placeholder="SuperSecretPassword" pattern=".{6,50}" required>
+                </div>
+                <label for="confirm_password" class="col-lg-2 control-label">Confirm Password</label>
+                <div class="col-lg-10">
+<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="SuperSecretPassword" pattern=".{6,50}" required>
                 </div>
             </div>
             <div class="form-group">
@@ -31,20 +35,18 @@
                         I am a teacher
                         </label>
                     </div>
-                    <div class="checkbox" style="padding: 0">
-                        <label>
-                            <input type="checkbox" name="remember_me">Remember Me
-                        </label>
-                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-lg-12 center-text">
-                    <button id="login" name="submit" value="login" class="btn btn-primary">Login</button>
+                    <button id="register" name="submit" value="register" class="btn btn-primary">Register</button>
                 </div>
             </div>
         </fieldset>
     </form>
 </div>
 {% endblock body_content %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/register.js')}}"></script>
+{% endblock scripts %}
 

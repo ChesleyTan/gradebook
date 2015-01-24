@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block navbar_content_left %}
+<li><a href="{{ url_for('about') }}">About</a></li>
+{% endblock navbar_content_left %}
 {% block body_content %}
 
 <div class="container">
@@ -23,7 +26,8 @@
         </div>
 
         <p class="center-text">
-            <a class="btn btn-primary btn-raised" href="{{ url_for('login') }}">Login/Register</a>
+            <a class="btn btn-primary btn-raised" href="{{ url_for('login') }}">Login</a>
+            <a class="btn btn-primary btn-raised" href="{{ url_for('register') }}">Register</a>
         </p>
 
     </div>
