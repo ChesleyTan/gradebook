@@ -81,12 +81,19 @@ def drop():
 
 def validate(email, tryPassword):
     student = get(email)
-    isValid = student.count() != 0
+    isValid = student.count() == 1
     if isValid:
         isValid = checkPassword(student[0]['password'], tryPassword)
         if isValid:
             return (True, "Successfully logged in!")
     return (False, "Email or password is incorrect.")
+
+def hasCourse(email, courseId):
+    student = get(email)
+    if student.count() == 1:
+        student = student[0]
+        return courseId in student[0]['courses']
+    return False
 
 ########## TESTING ##########
 if __name__ == "__main__":

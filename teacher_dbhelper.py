@@ -36,8 +36,11 @@ def remove(email):
 
 def get(email, teacher_id=None):
     if teacher_id:
-        id = ObjectId(teacher_id)
-        return teachers.find({'_id': id})
+        try:
+            id = ObjectId(teacher_id)
+            return teachers.find({'_id': id})
+        except:
+            return None
     else:
         return teachers.find({'email': email})
 
@@ -87,6 +90,7 @@ def addCourseId(email, courseId):
     if teacher.count() == 1:
         courses = teacher[0]['courses']
         courses.append(courseId)
+        print courses
         teachers.update(
             {'email' : email},
             {'$set': {
@@ -94,15 +98,15 @@ def addCourseId(email, courseId):
                 }
             }
         )
-        return (True, "Sucessfully updated courses.")
+        return (True, "Successfully updated courses.")
     else:
         return (False, "Error: User doesn't exist!")
 
-def removeCourseId(email, courseObjectId):
+def removeCourseId(email, courseId):
     teacher = teachers.find({'email' : email})
     if teacher.count() == 1:
         courses = teacher[0]['courses']
-        courses.remove(courseObjectId)
+        courses.remove(courseId)
         teachers.update(
             {'email' : email},
             {'$set': {

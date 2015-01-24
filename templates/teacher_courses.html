@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block styles %}
+<style type="text/css">
+    a:hover {
+        color: inherit;
+    }
+</style>
+{% endblock styles %}
+
 {% block navbar_content_left %}
 <li><a href="{{ url_for('teacher') }}">Home</a></li>
 <li><a href="{{ url_for('teacher_profile', teacher_id=teacher_data['_id']) }}">Profile</a></li>
@@ -17,7 +25,7 @@
     {% for course in courses %}
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title">{{ course['name'] }}</h3>
+<h3 class="panel-title"><a href="{{ url_for('course', course_id=course['_id']) }}">{{ course['name'] }}</a></h3>
         </div>
         <div class="panel-body">
             <span>{{ course['description'] }}</span>

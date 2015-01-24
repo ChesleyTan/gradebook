@@ -42,8 +42,12 @@ def removeAll(teacherId):
                         'teacherId' : teacherId
                     })
 
-def get(courseObjectId):
-    return courses.find({'_id': courseObjectId})
+def get(courseId):
+    try:
+        id = ObjectId(courseId)
+        return courses.find({'_id': id})
+    except:
+        return None
 
 def getByTeacher(teacherId, name=None):
     if name:
