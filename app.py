@@ -250,74 +250,72 @@ def teacher_courses():
     return redirect(url_for('index'))
 
 #need to replace teacher['_id'] with courseID and adjust databse
-@app.route('/teacher/assignments', methods=['GET','POST'])
-def teacher_assignments():
-    if session.has_key('email') and\
-       session.hass_key('userType') and\
-       session['userType'] == 'teacher':
-        if request.method == 'POST':
-            if request.form.has_key('name') and\
-               request.form.has_key('description') and\
-               request.form.has_key('date') and\
-               request.form.has_key('delete_name') and\
-               request.form.has_key('submit') and\
-               requst.form.has_key('password'):
-                response_tuple = teacherdb.validate(session['email'],
-                                                    request.form['password'])
-                if response_tuple[0]:
-                    if request.form['submit'] == 'add':
-                        teacher = teacherdb.get(session['email'])[0]
-                        response_tuple = assignmentdb.insert(teacher['_id'],
-                                                             request.form['name'],
-                                                             request.form['description']
-                                                             request.form['date'])
-                        if response_tuple[0]:
-                            new_assignment_id = assignmentdb.getByTeacher(teacher'_id'],
-                            name=request.form['name')[0]['_id']
-                        flash(response_tuple[1])
-                        return redirect(url_for('teacher_assignments'))
-                    elif request.form['submit'] == 'delete':
-                        teacher = teacherdb.get(session['email'])[0]
-                        if assignmentdb.exists(teacher['_id'],
-                                               request.form['delete_name']):
-                            assignment_id = assignmentdb.get(teacher['_id'],
-                                                             request.form['delete_name'])
-                            assignmentdb.remove(teacher['_id'],
-                                              request.form['delete_name']
-                                              request.form['descript']
-                                              reqeust.form['date'])
-                            teacherdb.removeAssignmentID(seesion['email'], assignment_id)
-                            flash("Successfully removed assignment")
-                        else:
-                            flash("Error: Assignment not found")
-                        return redirect(url_for('teacher_assignments'))
-                    else:
-                        flash("Invalid request")
-                        return redirect(url_for('teacher_assignments'))
-                else:
-                    flash(response_tuple[1])
-                    return redirect(url_for('teacher_assignments'))
-            else:
-                flash("Invalid request")
-                return redirect(url_for('teacher_assignments'))
-        else:
-            teacher = teacherdb.get(session['email'])
-            if teacher.count() == 1:
-                teacher_data = teacher[0]
-                assignment = []
-                for assignmentId in teacher_data['assignment']:
-                    assignment_cursor = assignmentdb.get(assignmentId)
-                    if assignment_cursor.count() == 1:
-                        assignments.append(assignment_cursor[0])
-                    else:
-                        # Teacher's courses list has a stale entry, so delete it
-                        teacherdb.removeAssignmentId(session['email'], assignmentId)
-                return render_template('teacher_assignment.html',
-                                       teacher_data=teacher[0],
-                                       assignment=assignment)
-    return redirect(url_for('index'))
-                            
-
+#@app.route('/teacher/assignments', methods=['GET','POST'])
+#def teacher_assignments():
+#    if session.has_key('email') and\
+#       session.hass_key('userType') and\
+#       session['userType'] == 'teacher':
+#        if request.method == 'POST':
+#            if request.form.has_key('name') and\
+#               request.form.has_key('description') and\
+#               request.form.has_key('date') and\
+#               request.form.has_key('delete_name') and\
+#               request.form.has_key('submit') and\
+#               requst.form.has_key('password'):
+#                response_tuple = teacherdb.validate(session['email'],
+#                                                    request.form['password'])
+#                if response_tuple[0]:
+#                    if request.form['submit'] == 'add':
+#                        teacher = teacherdb.get(session['email'])[0]
+#                        response_tuple = assignmentdb.insert(teacher['_id'],
+#                                                             request.form['name'],
+#                                                             request.form['description']
+#                                                             request.form['date'])
+#                        if response_tuple[0]:
+#                            new_assignment_id = assignmentdb.getByTeacher(teacher'_id'],
+#                            name=request.form['name')[0]['_id']
+#                        flash(response_tuple[1])
+#                        return redirect(url_for('teacher_assignments'))
+#                    elif request.form['submit'] == 'delete':
+#                        teacher = teacherdb.get(session['email'])[0]
+#                        if assignmentdb.exists(teacher['_id'],
+#                                               request.form['delete_name']):
+#                            assignment_id = assignmentdb.get(teacher['_id'],
+#                                                             request.form['delete_name'])
+#                            assignmentdb.remove(teacher['_id'],
+#                                              request.form['delete_name']
+#                                              request.form['descript']
+#                                              reqeust.form['date'])
+#                            teacherdb.removeAssignmentID(seesion['email'], assignment_id)
+#                            flash("Successfully removed assignment")
+#                        else:
+#                            flash("Error: Assignment not found")
+#                        return redirect(url_for('teacher_assignments'))
+#                    else:
+#                        flash("Invalid request")
+#                        return redirect(url_for('teacher_assignments'))
+#                else:
+#                    flash(response_tuple[1])
+#                    return redirect(url_for('teacher_assignments'))
+#            else:
+#                flash("Invalid request")
+#                return redirect(url_for('teacher_assignments'))
+#        else:
+#            teacher = teacherdb.get(session['email'])
+#            if teacher.count() == 1:
+#                teacher_data = teacher[0]
+#                assignment = []
+#                for assignmentId in teacher_data['assignment']:
+#                    assignment_cursor = assignmentdb.get(assignmentId)
+#                    if assignment_cursor.count() == 1:
+#                        assignments.append(assignment_cursor[0])
+#                    else:
+#                        # Teacher's courses list has a stale entry, so delete it
+#                        teacherdb.removeAssignmentId(session['email'], assignmentId)
+#                return render_template('teacher_assignment.html',
+#                                       teacher_data=teacher[0],
+#                                       assignment=assignment)
+#    return redirect(url_for('index'))
 
 @app.route('/student')
 @redirect_if_not_logged_in
