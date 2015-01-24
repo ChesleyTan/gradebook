@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+<li><a href="{{ url_for('teacher') }}">Home</a></li>
+<li><a href="{{ url_for('teacher_profile', teacher_id=teacher_data['_id']) }}">Profile</a></li>
+<li><a href="{{ url_for('messages') }}">Messages</a></li>
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li class="active"><a href="#">Settings</a></li>
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block body_content %}
+<div class="container">
+    <form id='form' class="form-horizontal" method="POST" action="{{ url_for('teacher_settings') }}">
+        <fieldset>
+            <div class="form-group">
+                <label for="name" class="col-lg-2 control-label">Name</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" pattern=".{1,30}" required>
+                </div>
+                <label for="school" class="col-lg-2 control-label">School</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="school" name="school" placeholder="Your School" pattern=".{1,100}" required>
+                </div>
+                <label for="email" class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-10">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com">
+                </div>
+                <label for="new_password" class="col-lg-2 control-label">New Password</label>
+                <div class="col-lg-10">
+<input type="password" class="form-control" id="new_password" name="new_password" placeholder="NewSuperSecretPassword" pattern=".{6,50}">
+                </div>
+                <label for="confirm_password" class="col-lg-2 control-label">Confirm New Password</label>
+                <div class="col-lg-10">
+<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="NewSuperSecretPassword" pattern=".{6,50}">
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label for="password" class="col-lg-2 control-label">Verify Password</label>
+                <div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" pattern=".{6,50}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-12 center-text">
+                    <button id="update" name="update" value="update" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock body_content %}
+{% block scripts %}
+{% if teacher_data['name'] != '' %}
+<script>document.getElementById('name').value="{{ teacher_data['name'] }}"</script>
+{% endif %}
+{% if teacher_data['school'] != '' %}
+<script>document.getElementById('school').value="{{ teacher_data['school'] }}"</script>
+{% endif %}
+{% if teacher_data['email'] != '' %}
+<script>document.getElementById('email').value="{{ teacher_data['email'] }}"</script>
+{% endif %}
+<script src="{{ url_for('static', filename='js/teacher_settings.js') }}"></script>
+{% endblock scripts %}
