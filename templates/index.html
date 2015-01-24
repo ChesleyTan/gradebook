@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block navbar_content_left %}
+<li><a href="{{ url_for('about') }}">About</a></li>
+{% endblock navbar_content_left %}
 {% block body_content %}
 
 <div class="container">
