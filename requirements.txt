@@ -1,5 +1,5 @@
 Python Packages (pip install)
 =============================
-mongodb
+pymongo
 validate_email
 pyDNS
