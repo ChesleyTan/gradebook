@@ -127,6 +127,23 @@ def addCourse(studentId, courseId):
             courses = [courseId]
         update('', studentId=studentId, courses=courses)
 
+def removeCourse(email, courseId):
+    student = students.find({'email' : email})
+    if student.count() == 1:
+        courses = student[0]['courses']
+        courses.remove(courseId)
+        students.update(
+            {'email' : email},
+            {'$set': {
+                'courses' : courses
+                }
+            }
+        )
+        return (True, "Successfully updated courses.")
+    else:
+        return (False, "Error: User doesn't exist!")
+
+
 def getId(email):
     student = students.find({'email' : email},
                          {'_id' : 1})

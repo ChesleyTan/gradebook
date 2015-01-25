@@ -1,14 +1,26 @@
 {% extends "base.html" %}
 
 {% block navbar_content_left %}
-<li class="active"><a href="#">Home</a></li>
-<li><a href="{{ url_for('student_profile', student_id=student_id) }}">Profile</a></li>
-<li><a href="{{ url_for('student_courses') }}">Courses</a></li>
-<li><a href="{{ url_for('messages') }}">Messages</a></li>
+{% if isStudent %}
+    <li><a href="{{ url_for('student') }}">Home</a></li>
+    <li><a href="{{ url_for('student_profile', student_id=student_data['_id']) }}">Profile</a></li>
+    <li><a href="{{ url_for('student_courses') }}">Courses</a></li>
+    <li class="active"><a href="#">Messages</a></li>
+{% elif isTeacher %}
+    <li><a href="{{ url_for('teacher') }}">Home</a></li>
+    <li><a href="{{ url_for('teacher_profile', teacher_id=teacher_data['_id']) }}">Profile</a></li>
+    <li><a href="{{ url_for('teacher_courses') }}">Courses</a></li>
+    <li class="active"><a href="#">Messages</a></li>
+{% endif %}
 {% endblock navbar_content_left %}
 {% block navbar_content_right %}
-<li><a href="{{ url_for('student_settings') }}">Settings</a></li>
-<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% if isStudent %}
+    <li><a href="{{ url_for('student_settings') }}">Settings</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% elif isTeacher %}
+    <li><a href="{{ url_for('teacher_settings') }}">Settings</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endif %}
 {% endblock navbar_content_right %}
 
 {% block body_content %}
