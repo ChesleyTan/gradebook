@@ -35,6 +35,10 @@
     -webkit-user-select: none;
     -o-user-select: none;
 }
+ul.list-unstyled-center {
+    list-style-type: none;
+    padding: 0;
+}
 /* BOOTSTRAP OVERRIDES (others are inline) */
 .navbar {
     margin-bottom: 0;

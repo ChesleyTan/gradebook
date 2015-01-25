@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block body_content %}
+<div class="container">
+    <br/>
+    <div class="col-md-12 center-all">
+    <h2>Name</h2>
+    <span id="name">{{ course_data['name'] }}</span>
+    <br/>
+    <h2>Description</h2>
+    <p id="description">{{ course_data['description'] }}</p>
+    <h2>Teacher</h2>
+    <a id="teacher" href="{{ url_for('teacher_profile', teacher_id=course_data['teacherId']) }}">{{ teacher }}</a>
+    <br/>
+    {% if hasPermissionToView and students %}
+        <h2>Students</h2>
+        <ul class="list-unstyled-center">
+        {% for student in students %}
+            <li>
+                <a href="{{ url_for('student_profile', student_id=student['_id']) }}">{{ student['name'] }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if showRequestButton == 1 %}
+    <form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
+    <button type="submit" name="submit" value="submit" class="btn btn-success">Request Admission</button>
+    </form>
+    {% elif showRequestButton == 2 %}
+    <a href="#" class="btn btn-success disabled">Request Pending</a>
+    {% endif %}
+    {% if hasPermissionToView and requesters %}
+        <h2>Requests</h2>
+        <ul class="list-unstyled-center">
+        {% for requester in requesters %}
+        <li>
+            <form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
+                <a href="{{ url_for('student_profile', student_id=requester['_id'])}}" class="btn btn-primary">{{ requester['name'] }}</a>
+                <input type="hidden" name="requester_id" value="{{ requester['_id'] }}"></input>
+                <button type="submit" class="btn btn-success" name="request_action" value="accept">Accept</button>
+                <button type="submit" class="btn btn-danger" name="request_action" value="deny">Deny</button>
+            </form>
+        </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+</div>
+{% endblock body_content %}
+{% block scripts %}
+{% endblock scripts %}

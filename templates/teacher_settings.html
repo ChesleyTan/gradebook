@@ -3,6 +3,7 @@
 {% block navbar_content_left %}
 <li><a href="{{ url_for('teacher') }}">Home</a></li>
 <li><a href="{{ url_for('teacher_profile', teacher_id=teacher_data['_id']) }}">Profile</a></li>
+<li><a href="{{ url_for('teacher_courses') }}">Courses</a></li>
 <li><a href="{{ url_for('messages') }}">Messages</a></li>
 {% endblock navbar_content_left %}
 {% block navbar_content_right %}

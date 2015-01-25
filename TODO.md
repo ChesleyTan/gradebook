@@ -1,8 +1,7 @@
-* class management
+* courses page for student
 * assignment management
-* setting page
-* profile page
 * home page feed
 * messaging system
 * email
 * update tests for db helpers
+* user search

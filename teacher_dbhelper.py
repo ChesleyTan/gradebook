@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from validation import *
 
 client = MongoClient()
@@ -6,8 +7,10 @@ db = client.gradebook
 teachers = db.teachers
 
 # TODO email confirmation
-# TODO check return value for insert
-def insert(email, password):
+def insert(name, email, password):
+    response_tuple = isValidName(name)
+    if not response_tuple[0]:
+        return response_tuple
     response_tuple = isValidEmail(email)
     if not response_tuple[0]:
         return response_tuple
@@ -18,7 +21,7 @@ def insert(email, password):
         new_user = {
             'email' : email,
             'password' : generatePasswordHash(password),
-            'name' : '',
+            'name' : name,
             'school' : '',
             'courses' : []
         }
@@ -33,8 +36,15 @@ def exists(email):
 def remove(email):
     teachers.remove({'email' : email}, multi=False)
 
-def get(email):
-    return teachers.find({'email': email})
+def get(email, teacher_id=None):
+    if teacher_id:
+        try:
+            id = ObjectId(teacher_id)
+            return teachers.find({'_id': id})
+        except:
+            return None
+    else:
+        return teachers.find({'email': email})
 
 def update(email, new_email=None, name=None, school=None, password=None,
            courses=None):
@@ -77,6 +87,38 @@ def update(email, new_email=None, name=None, school=None, password=None,
     else:
         return (False, "Error: User doesn't exist!")
 
+def addCourseId(email, courseId):
+    teacher = teachers.find({'email' : email})
+    if teacher.count() == 1:
+        courses = teacher[0]['courses']
+        courses.append(courseId)
+        teachers.update(
+            {'email' : email},
+            {'$set': {
+                'courses' : courses
+                }
+            }
+        )
+        return (True, "Successfully updated courses.")
+    else:
+        return (False, "Error: User doesn't exist!")
+
+def removeCourseId(email, courseId):
+    teacher = teachers.find({'email' : email})
+    if teacher.count() == 1:
+        courses = teacher[0]['courses']
+        courses.remove(courseId)
+        teachers.update(
+            {'email' : email},
+            {'$set': {
+                'courses' : courses
+                }
+            }
+        )
+        return (True, "Sucessfully updated courses.")
+    else:
+        return (False, "Error: User doesn't exist!")
+
 def dump():
     for c in teachers.find():
         print c
@@ -86,12 +128,18 @@ def drop():
 
 def validate(email, tryPassword):
     teacher = get(email)
-    isValid = teacher.count() != 0
+    isValid = teacher.count() == 1
     if isValid:
         isValid = checkPassword(teacher[0]['password'], tryPassword)
         if isValid:
             return (True, "Successfully logged in!")
     return (False, "Email or password is incorrect.")
+
+def hasCourse(email, courseId):
+    teacher = get(email)
+    if teacher.count() == 1:
+        return courseId in teacher[0]['courses']
+    return False
 
 ########## TESTING ##########
 if __name__ == "__main__":
