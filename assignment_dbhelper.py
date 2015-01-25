@@ -33,12 +33,10 @@ def exists(courseId, name):
                                 'name' : name
                             }).count() > 0
 
-def remove(courseId, name, description, dueDate):
+def remove(courseId, name):
     assignments.remove({
                             'courseId' : courseId,
                             'name' : name,
-                            'description' : description,
-                            'dueDate' : dueDate
                        }, multi=False)
 
 def removeAll(courseId):
@@ -48,6 +46,7 @@ def removeAll(courseId):
 
 def get(courseId):
     return assignments.find({'courseId': courseId})
+
 
 def update(courseId, name, description, dueDate, new_courseId=None,
            new_name=None, new_description=None, new_dueDate=None):
