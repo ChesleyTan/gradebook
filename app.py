@@ -100,21 +100,23 @@ def login():
 def register():
     # TODO Add name to register
     if request.method == 'POST':
-        if request.form.has_key('email') and\
+        if request.form.has_key('name') and\
+           request.form.has_key('email') and\
            request.form.has_key('password') and\
            request.form.has_key('userType'):
+            name = request.form['name']
             email = request.form['email']
             pword = request.form['password']
             utype = request.form['userType']
             if utype == 'teacher':
-                response_tuple = teacherdb.insert(email, pword)
+                response_tuple = teacherdb.insert(name, email, pword)
                 flash(response_tuple[1])
                 if response_tuple[0]:
                     return redirect(url_for('login'))
                 else:
                     return render_template('register.html')
             elif utype == 'student':
-                response_tuple = studentdb.insert(email, pword)
+                response_tuple = studentdb.insert(name, email, pword)
                 flash(response_tuple[1])
                 if response_tuple[0]:
                     return redirect(url_for('login'))

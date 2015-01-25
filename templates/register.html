@@ -11,6 +11,10 @@
     <form id='form' class="form-horizontal" method="POST" action="{{ url_for('register') }}">
         <fieldset>
             <div class="form-group">
+                <label for="name" class="col-lg-2 control-label">Name</label>
+                <div class="col-lg-10">
+                    <input type="name" class="form-control" id="name" name="name" placeholder="Your Name" pattern=".{1,30}" required>
+                </div>
                 <label for="email" class="col-lg-2 control-label">Email</label>
                 <div class="col-lg-10">
                     <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com" required>
