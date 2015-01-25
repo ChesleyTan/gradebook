@@ -98,6 +98,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 @redirect_if_logged_in
 def register():
+    # TODO Add name to register
     if request.method == 'POST':
         if request.form.has_key('email') and\
            request.form.has_key('password') and\
@@ -370,19 +371,19 @@ def student_settings(student_id=None):
 def messages():
     return render_template('index.html')
 
-@app.route('/course/<course_id>')
+@app.route('/course/<course_id>', methods=['GET', 'POST'])
 @redirect_if_not_logged_in
 def course(course_id=None):
     if course_id:
-        # Check that user has permission to view the course
-        hasPermissionToView = False
-        if session['userType'] == 'student':
-            hasPermissionToView = studentdb.hasCourse(session['email'],
-                                                      course_id)
-        elif session['userType'] == 'teacher':
-            hasPermissionToView = teacherdb.hasCourse(session['email'],
-                                                      course_id)
-        if hasPermissionToView:
+        if request.method == 'GET':
+            # Check that user has permission to view specific information
+            hasPermissionToView = False
+            if session['userType'] == 'student':
+                hasPermissionToView = studentdb.hasCourse(session['email'],
+                                                        course_id)
+            elif session['userType'] == 'teacher':
+                hasPermissionToView = teacherdb.hasCourse(session['email'],
+                                                        course_id)
             course = coursedb.get(course_id)
             if course and course.count() == 1:
                 course = course[0]
@@ -390,13 +391,61 @@ def course(course_id=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
-                    for studentId in course['students']:
-                        student = studentdb.get('', student_id=studentId)
-                        if student and student.count() == 1:
-                            students.append(student[0]['name'])
-                    #TODO get assignments
-                    return render_template('course.html', course_data=course,
-                            teacher=teacher, students=students)
+                    if hasPermissionToView:
+                        for studentId in course['students']:
+                            student = studentdb.get('', student_id=studentId)
+                            if student and student.count() == 1:
+                                students.append(student[0])
+                    # TODO get assignments
+                    if session['userType'] == 'student':
+                        # showRequestButton flag:
+                        # 0 -> Do not show
+                        # 1 -> Show
+                        # 2 -> Show disabled and pending
+                        showRequestButton = 0
+                        userId = studentdb.getId(session['email'])
+                        if not studentdb.hasCourse(session['email'], course_id):
+                            course_requests = coursedb.getCourseRequests(course_id)
+                            if course_requests != None:
+                                if userId not in course_requests:
+                                    showRequestButton = 1
+                                else:
+                                    showRequestButton = 2
+                        return render_template('course.html', course_data=course,
+                                teacher=teacher, students=students,
+                                showRequestButton=showRequestButton,
+                                hasPermissionToView=hasPermissionToView)
+                    else:
+                        course_requests = coursedb.getCourseRequests(course_id)
+                        requesters = []
+                        for studentId in course_requests:
+                            student = studentdb.get('', student_id=studentId)
+                            if student and student.count() == 1:
+                                requesters.append(student[0])
+                        return render_template('course.html', course_data=course,
+                                teacher=teacher, students=students,
+                                hasPermissionToView=hasPermissionToView,
+                                requesters=requesters)
+        else:
+            if session['userType'] == 'student':
+                userId = studentdb.getId(session['email'])
+                if userId:
+                    coursedb.addCourseRequest(course_id, userId)
+                    return redirect(url_for('course', course_id=course_id))
+            else:
+                if request.form.has_key('requester_id') and\
+                   request.form.has_key('request_action'):
+                    if request.form['request_action'] == 'accept':
+                        if studentdb.exists('', request.form['requester_id']):
+                            coursedb.addStudentToCourseAndRemoveRequest(course_id,
+                                    request.form['requester_id'])
+                            studentdb.addCourse(request.form['requester_id'],
+                                                course_id)
+                    else:
+                        coursedb.removeCourseRequest(course_id,
+                                request.form['requester_id'])
+                    return redirect(url_for('course', course_id=course_id))
+
     return redirect(url_for('index'))
 
 @app.errorhandler(404)

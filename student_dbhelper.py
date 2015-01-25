@@ -26,20 +26,30 @@ def insert(email, password):
     else:
         return (False, "Error: A user with that email already exists.")
 
-def exists(email):
-    return students.find({'email' : email}).count() > 0
+def exists(email, studentId=None):
+    if studentId:
+        try:
+            id = ObjectId(studentId)
+            return students.find({'_id' : id}).count() > 0
+        except:
+            return False
+    else:
+        return students.find({'email' : email}).count() > 0
 
 def remove(email):
     students.remove({'email' : email}, multi=False)
 
 def get(email, student_id=None):
     if student_id:
-        id = ObjectId(student_id)
-        return students.find({'_id': id})
+        try:
+            id = ObjectId(student_id)
+            return students.find({'_id': id})
+        except:
+            return None
     else:
         return students.find({'email': email})
 
-def update(email, new_email=None, name=None, password=None, courses=None):
+def update(email, studentId=None, new_email=None, name=None, password=None, courses=None):
     if new_email:
         response_tuple = isValidEmail(new_email)
         if not response_tuple[0]:
@@ -57,17 +67,26 @@ def update(email, new_email=None, name=None, password=None, courses=None):
             response_tuple = isValidCourse(course)
             if not response_tuple[0]:
                 return response_tuple
-    if(exists(email)):
+    if(exists(email, studentId)):
         updateDict = {}
-        if new_email: updateDict['email'] = new_email
-        if name: updateDict['name'] = name
-        if password: updateDict['password'] =\
+        if new_email != None: updateDict['email'] = new_email
+        if name != None: updateDict['name'] = name
+        if password != None: updateDict['password'] =\
                         generatePasswordHash(password)
-        if courses: updateDict['courses'] = courses
-        students.update(
-                {'email': email},
-                {'$set': updateDict}
-        )
+        if courses != None: updateDict['courses'] = courses
+        if studentId:
+            try:
+                students.update(
+                        {'_id': ObjectId(studentId)},
+                        {'$set': updateDict}
+                )
+            except:
+                return (False, "Error: Invalid student id")
+        else:
+            students.update(
+                    {'email': email},
+                    {'$set': updateDict}
+            )
         return (True, "Successfully updated info.")
     else:
         return (False, "Update info error: User doesn't exist!")
@@ -88,11 +107,30 @@ def validate(email, tryPassword):
             return (True, "Successfully logged in!")
     return (False, "Email or password is incorrect.")
 
-def hasCourse(email, courseId):
-    student = get(email)
+def hasCourse(email, courseId, studentId=None,):
+    student = get(email, student_id=studentId)
     if student.count() == 1:
         return courseId in student[0]['courses']
     return False
+
+def addCourse(studentId, courseId):
+    student = get('', student_id=studentId)
+    if student and student.count() == 1:
+        student = student[0]
+        courses = student['courses']
+        if courses:
+            courses.append(courseId)
+        else:
+            courses = [courseId]
+        update('', studentId=studentId, courses=courses)
+
+def getId(email):
+    student = students.find({'email' : email},
+                         {'_id' : 1})
+    if student.count() == 1:
+        return str(student[0]['_id'])
+    else:
+        return None
 
 ########## TESTING ##########
 if __name__ == "__main__":

@@ -23,9 +23,18 @@
 <div class="container">
     <h1>Current Courses</h1>
     {% for course in courses %}
+    {% if course['courseRequests']|length > 0 %}
+    <div class="panel panel-info">
+    {% else %}
     <div class="panel panel-primary">
+    {% endif %}
         <div class="panel-heading">
-<h3 class="panel-title"><a href="{{ url_for('course', course_id=course['_id']) }}">{{ course['name'] }}</a></h3>
+            <h3 class="panel-title">
+            <a href="{{ url_for('course', course_id=course['_id']) }}">{{ course['name'] }}</a>
+            {% if course['courseRequests']|length > 0 %}
+            <span style="color: #383838"> ({{ course['courseRequests']|length }} admission request(s) pending)</span>
+            {% endif %}
+            </h3>
         </div>
         <div class="panel-body">
             <span>{{ course['description'] }}</span>
