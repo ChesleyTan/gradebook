@@ -368,10 +368,57 @@ def student_settings(student_id=None):
                     student_data=student_data)
     return redirect(url_for('index'))
 
-@app.route('/messages')
+@app.route('/student/courses', methods=['GET', 'POST'])
 @redirect_if_not_logged_in
-def messages():
-    return render_template('index.html')
+@redirect_if_logged_in_and_not_student
+def student_courses():
+    if request.method == 'POST':
+        if request.form.has_key('delete_name') and\
+            request.form.has_key('password'):
+            response_tuple = studentdb.validate(session['email'],
+                                request.form['password'])
+            if response_tuple[0]:
+                student = studentdb.get(session['email'])[0]
+                foundCourse = False
+                for courseId in student['courses']:
+                    course_cursor = coursedb.get(courseId)
+                    if course_cursor and course_cursor.count() == 1:
+                        course_cursor = course_cursor[0]
+                        if course_cursor['name'] ==\
+                           request.form['delete_name']:
+                            foundCourse = True
+                            course_id = str(coursedb.getByTeacher(
+                                    course_cursor['teacherId'],
+                                    name=request.form['delete_name'])[0]['_id'])
+                            coursedb.remove(course_cursor['teacherId'],
+                                    request.form['delete_name'])
+                            studentdb.removeCourse(session['email'], course_id)
+                            flash("Successfully left course")
+                        if not foundCourse:
+                            flash("Invalid course name")
+                return redirect(url_for('student_courses'))
+            else:
+                flash(response_tuple[1])
+                return redirect(url_for('student_courses'))
+        else:
+            flash("Invalid request")
+            return redirect(url_for('student_courses'))
+    else:
+        student = studentdb.get(session['email'])
+        if student.count() == 1:
+            student_data = student[0]
+            courses = []
+            for courseId in student_data['courses']:
+                course_cursor = coursedb.get(courseId)
+                if course_cursor.count() == 1:
+                    courses.append(course_cursor[0])
+                else:
+                    # Student's courses list has a stale entry, so delete it
+                    studentdb.removeCourse(session['email'], courseId)
+            return render_template('student_courses.html',
+                                    student_data=student[0],
+                                    courses=courses)
+        return redirect(url_for('index'))
 
 @app.route('/course/<course_id>', methods=['GET', 'POST'])
 @redirect_if_not_logged_in
@@ -449,6 +496,20 @@ def course(course_id=None):
                     return redirect(url_for('course', course_id=course_id))
 
     return redirect(url_for('index'))
+
+@app.route('/messages')
+@redirect_if_not_logged_in
+def messages():
+    if session['userType'] == 'student':
+        student = studentdb.get(session['email'])
+        if student.count() == 1:
+            return render_template('messages.html', isStudent=True,
+                        student_data=student[0])
+    else:
+        teacher = teacherdb.get(session['email'])
+        if teacher.count() == 1:
+            return render_template('messages.html', isTeacher=True,
+                        teacher_data=teacher[0])
 
 @app.errorhandler(404)
 def page_not_found(e):

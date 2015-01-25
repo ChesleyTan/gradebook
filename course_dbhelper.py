@@ -160,6 +160,12 @@ def addStudentToCourseAndRemoveRequest(courseId, studentId):
         update('', '', courseId, new_students=students)
     removeCourseRequest(courseId, studentId)
 
+def removeStudent(courseId, studentId):
+    students = getStudents(courseId=courseId)
+    if students != None and studentId in students:
+        students.remove(studentId)
+        update('', '', courseId, new_students=students)
+
 ########## TESTING ##########
 #if __name__ == "__main__":
 #    drop()

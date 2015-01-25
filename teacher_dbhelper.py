@@ -115,7 +115,7 @@ def removeCourseId(email, courseId):
                 }
             }
         )
-        return (True, "Sucessfully updated courses.")
+        return (True, "Successfully updated courses.")
     else:
         return (False, "Error: User doesn't exist!")
 
