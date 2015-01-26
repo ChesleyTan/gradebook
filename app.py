@@ -603,20 +603,32 @@ def messages():
     # most recent message sent/recieved. 
     # Clicking takes you to that particular message page, /messages/<user>
 
-@app.route('/message/<user>')
+@app.route('/message/<user>', methods=['GET','POST'])
 @redirect_if_not_logged_in
 def message_page(user=None):
-    if session['userType'] == 'student':
-        student = studentdb.get(session['email'])
-        if student.count() == 1:
-            return render_template('message_page.html', isStudent=True,
-                        student_data=student[0], target=user)
+    if request.method == 'GET':
+        if session['userType'] == 'student':
+            student = studentdb.get(session['email'])
+            if student.count() == 1:
+                return render_template('message_page.html', isStudent=True,
+                            student_data=student[0], target=user)
+        else:
+            teacher = teacherdb.get(session['email'])
+            if teacher.count() == 1:
+                return render_template('message_page.html', isTeacher=True,
+                            teacher_data=teacher[0], target=user)
     else:
-        teacher = teacherdb.get(session['email'])
-        if teacher.count() == 1:
-            return render_template('message_page.html', isTeacher=True,
-                        teacher_data=teacher[0], target=user)
-
+        if session['userType'] == 'student':
+            student = studentdb.get(session['email'])
+            if student.count() == 1:
+                return render_template('message_page.html', isStudent=True,
+                            student_data=student[0], target=user)
+        else:
+            teacher = teacherdb.get(session['email'])
+            if teacher.count() == 1:
+                return render_template('message_page.html', isTeacher=True,
+                            teacher_data=teacher[0], target=user)
+                
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
