@@ -444,7 +444,7 @@ def course(course_id=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
-                    assignments = assignmentdbb.getByCourse(course_id)
+                    assignments = assignmentdb.getByCourse(course_id)
                     if hasPermissionToView:
                         for studentId in course['students']:
                             student = studentdb.get('', student_id=studentId)
@@ -513,11 +513,13 @@ def course(course_id=None):
                                                         request.form['password'])
                     if response_tuple[0]:
                         if request.form['submit'] == 'add':
-                            date = datetime.date(request.form['year'], request.form['month'], request.form['day'])
+                            d = date(int(request.form['year']),
+                                     int(request.form['month']),
+                                     int(request.form['day']))
                             response_tuple = assignmentdb.insert(course_id, 
                                                                  request.form['name'], 
                                                                  request.form['description'], 
-                                                                 date, 
+                                                                 d, 
                                                                  request.form['aType'])
                             flash(response_tuple[1])
                             return redirect(url_for('course', course_id=course_id))
@@ -641,4 +643,5 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.debug=True
+    app.secret_key = "MATTHEWWWWW"
     app.run(host='0.0.0.0')

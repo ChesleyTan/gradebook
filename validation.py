@@ -1,6 +1,7 @@
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
 import time
+from datetime import date
 
 def isValidEmail(email):
     valid = validate_email(email)
@@ -77,7 +78,7 @@ def isValidAssignmentDescription(description):
     return (True, "Successfully validated description")
 
 def isValidDueDate(dueDate):
-    valid = time.time() < dueDate
+    valid = date.today() < dueDate
     if not valid:
         return (False, "Error: Due date cannot be in the past")
     return (True, "Successfully validated due date")

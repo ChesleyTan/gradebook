@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 from validation import *
+import time
+from datetime import date
 
 client = MongoClient()
 db = client.gradebook
@@ -20,11 +22,12 @@ def insert(courseId, name, description, dueDate, aType):
     if not response_tuple[0]:
         return response_tuple
     if not exists(courseId, name):
+        d = str(dueDate.month)+'/'+str(dueDate.day)+'/'+str(dueDate.year)
         new_assignment = {
             'courseId' : courseId,
             'name' : name,
             'description' : description,
-            'dueDate' : dueDate, 
+            'dueDate' : d, 
             'aType' : aType
         }
         assignments.insert(new_assignment)
