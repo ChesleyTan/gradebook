@@ -603,9 +603,10 @@ def messages():
     # most recent message sent/recieved. 
     # Clicking takes you to that particular message page, /messages/<user>
 
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return "Sorry, nothing at this URL.", 404
+    return render_template('404.html')
 
 #======================END-DEFINITIONS======================
 
