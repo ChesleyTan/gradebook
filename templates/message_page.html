@@ -64,15 +64,15 @@
 </div>
 </div>
 </div>
-<form class="form-horizontal">
+<form method="POST" class="form-horizontal">
     <fieldset>
         <div class="form-group">
             <div class="col-lg-7 col-lg-offset-2">
-                <textarea class="form-control" rows="3" id="textArea"></textarea>
+                <textarea class="form-control" rows="3" name="message" id="textArea"></textarea>
                 <span class="help-block">Enter your message here, then hit submit.</span>
             </div>
             <div class="col-lg-3">
-                <button type="submit" class="btn btn-success">Submit<div class="ripple-wrapper"></div></button>
+                <button type="submit" value="message" name="submit" class="btn btn-success">Submit<div class="ripple-wrapper"></div></button>
             </div>
         </div>
     </fieldset>
