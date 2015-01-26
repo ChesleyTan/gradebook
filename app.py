@@ -444,7 +444,7 @@ def course(course_id=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
-                    assignments = assignmentdbb.getByCourse(course_id)
+                    assignments = assignmentdb.get(course_id)
                     if hasPermissionToView:
                         for studentId in course['students']:
                             student = studentdb.get('', student_id=studentId)
@@ -506,29 +506,21 @@ def course(course_id=None):
                         request.form.has_key('day') and\
                         request.form.has_key('year') and\
                         request.form.has_key('aType') and\
-                        request.form.has_key('delete_name') and\
                         request.form.has_key('password') and\
                         request.form.has_key('submit'):
                     response_tuple = teacherdb.validate(session['email'],
                                                         request.form['password'])
                     if response_tuple[0]:
                         if request.form['submit'] == 'add':
-                            date = datetime.date(request.form['year'], request.form['month'], request.form['day'])
+                            d = date(int(request.form['year']),
+                                     int(request.form['month']),
+                                     int(request.form['day']))
                             response_tuple = assignmentdb.insert(course_id, 
                                                                  request.form['name'], 
                                                                  request.form['description'], 
-                                                                 date, 
+                                                                 d, 
                                                                  request.form['aType'])
                             flash(response_tuple[1])
-                            return redirect(url_for('course', course_id=course_id))
-                        elif request.form['submit'] == 'delete':
-                            if assignmentdb.exists(course_id, 
-                                                   request.form['delete_name']):
-                                assignmentdb.remove(course_id,
-                                                    request.form['delete_name'])
-                                flash("Successfully removed assignment")
-                            else:
-                                flash("Error: Assignment not found")
                             return redirect(url_for('course', course_id=course_id))
                         else:
                             flash("Invalid request")
@@ -562,7 +554,7 @@ def assignment(course_id=None, name=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
-                    assignment = assignmentdb.getByCourse(course_id)
+                    assignments = assignmentdb.get(course_id)
                     if hasPermissionToView:
                         for studentId in course['students']:
                             student = studentdb.get('', student_id=studentId)
@@ -572,16 +564,54 @@ def assignment(course_id=None, name=None):
                                    teacher=teacher, students=students, 
                                    hasPermissionToView=hasPermissionToView, 
                                    name=name, userType=session['userType'], 
-                                   assignment=assignment)
+                                   assignments=assignments)
         else:
             if session['userType'] == 'student':
                 #something to do?
                 return redirect(url_for('assignment', course_id=course_id, name=name))
             else:
-                #TODO FINISH
-                return redirect(url_for('assignment', course_id=course_id, name=name))
-    else:
-        return redirect(url_for('assignment', course_id=course_id, name=name))
+                if (request.form.has_key('new_name') and\
+                        request.form.has_key('new_description') and\
+                        request.form.has_key('new_month') and\
+                        request.form.has_key('new_day') and\
+                        request.form.has_key('new_year') and\
+                        request.form.has_key('new_aType')) or\
+                        (request.form.has_key('password') and\
+                        request.form.has_key('submit')):
+                    response_tuple = teacherdb.validate(session['email'],
+                                                        request.form['password'])
+                    if response_tuple[0]:
+                        if request.form['submit'] == 'edit':
+                            d = date(int(request.form['new_year']),
+                                     int(request.form['new_month']),
+                                     int(request.form['new_day']))
+                            response_tuple = assignmentdb.update(course_id,
+                                                                 name, 
+                                                                 request.form['new_name'],
+                                                                 request.form['new_description'],
+                                                                 d, 
+                                                                 request.form['new_aType'])
+                            flash(response_tuple[1])
+                            return redirect(url_for('assignment', course_id=course_id, name=request.form['new_name']))
+                        elif request.form['submit'] == 'delete':
+                            if assignmentdb.exists(course_id, name):
+                                assignmentdb.remove(course_id, name)
+                                flash("Successfully removed assignment")
+                            else:
+                                flash("Error: Assignment not found")
+                            return redirect(url_for('course', course_id=course_id))
+                        else:
+                            flash("Invalid request")
+                            return redirect(url_for('assignment', course_id=course_id, name=name))
+                    else:
+                        flash(response_tuple[1])
+                        return redirect(url_for('assignment', course_id=course_id, name=name))
+                else:
+                    flash("Invalid request")
+                    return redirect(url_for('assignment', course_id=course_id, name=name))                             
+                           
+    return redirect(url_for('index'))
+                                        
     
 @app.route('/messages')
 @redirect_if_not_logged_in
@@ -641,4 +671,5 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     app.debug=True
+    app.secret_key = "MATTHEWWWWW"
     app.run(host='0.0.0.0')

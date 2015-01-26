@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 from validation import *
+import time
+from datetime import date
 
 client = MongoClient()
 db = client.gradebook
@@ -20,11 +22,20 @@ def insert(courseId, name, description, dueDate, aType):
     if not response_tuple[0]:
         return response_tuple
     if not exists(courseId, name):
+        if len(str(dueDate.month)) == 1:
+            d = '0'+str(dueDate.month)+'/'
+        else:
+            d = str(dueDate.month)+'/'
+        if len(str(dueDate.day)) == 1:
+            d = d+'0'+str(dueDate.day)+'/'
+        else:
+            d = d+str(dueDate.day)+'/'
+        d = d+str(dueDate.year)
         new_assignment = {
             'courseId' : courseId,
             'name' : name,
             'description' : description,
-            'dueDate' : dueDate, 
+            'dueDate' : d, 
             'aType' : aType
         }
         assignments.insert(new_assignment)
@@ -49,16 +60,10 @@ def removeAll(courseId):
                            'courseId' : courseId
                        })
 
-def getByCourse(courseId):
+def get(courseId):
     return assignments.find({'courseId' : courseId})
-
-def getByName(courseId, name):
-    return assignments.find({'courseId' : courseId, 
-                             'name' : name})
-
-def update(courseId, name, description, dueDate, aType, new_courseId=None,
-           new_name=None, new_description=None, new_dueDate=None, 
-           new_aType=None):
+            
+def update(courseId, name, new_name=None, new_description=None, new_dueDate=None, new_aType=None):
     if new_name:
         response_tuple = isValidAssignment(new_name)
         if not response_tuple[0]:
@@ -76,21 +81,20 @@ def update(courseId, name, description, dueDate, aType, new_courseId=None,
         if not response_tuple[0]:
             return response_tuple
     if(exists(courseId, name)):
+        d = str(new_dueDate.month)+'/'+str(new_dueDate.day)+'/'+str(new_dueDate.year)
         updateDict = {}
-        if new_courseId: updateDict['courseId'] = new_courseId
-        if new_name: updateDict['name'] = new_name
-        if new_description: updateDict['description'] = new_description
-        if new_dueDate: updateDict['dueDate'] = new_dueDate
-        if new_aType: updateDict['aType'] = new_aType
+        updateDict['name'] = new_name
+        updateDict['description'] = new_description
+        updateDict['dueDate'] = d
+        updateDict['aType'] = new_aType
         assignments.update(
             {
-                'courseId': courseId,
+                'courseId' : courseId,
                 'name' : name,
-                'description' : description,
-                'dueDate' : dueDate, 
-                'aType' : aType
             },
-                {'$set': updateDict}
+            {
+                '$set' : updateDict
+            }
         )
         return (True, "Successfully updated assignment info.")
     else:
