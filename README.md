@@ -39,3 +39,4 @@ Relevant Python style guide: https://www.python.org/dev/peps/pep-0008/
 * View assignments and keep track of due date  
 * Receive email from email system  
 * Send and receive messages to/from teacher  
+* Possibly send and receive messages to/from other students, pending teacher approval
