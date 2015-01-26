@@ -603,6 +603,19 @@ def messages():
     # most recent message sent/recieved. 
     # Clicking takes you to that particular message page, /messages/<user>
 
+@app.route('/messages/<user>')
+@redirect_if_not_logged_in
+def message_page():
+    if session['userType'] == 'student':
+        student = studentdb.get(session['email'])
+        if student.count() == 1:
+            return render_template('messages.html', isStudent=True,
+                        student_data=student[0])
+    else:
+        teacher = teacherdb.get(session['email'])
+        if teacher.count() == 1:
+            return render_template('messages.html', isTeacher=True,
+                        teacher_data=teacher[0])
 
 @app.errorhandler(404)
 def page_not_found(e):
