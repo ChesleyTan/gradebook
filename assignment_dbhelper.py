@@ -49,9 +49,12 @@ def removeAll(courseId):
                            'courseId' : courseId
                        })
 
-def get(courseId):
-    return assignments.find({'courseId': courseId})
+def getByCourse(courseId):
+    return assignments.find({'courseId' : courseId})
 
+def getByName(courseId, name):
+    return assignments.find({'courseId' : courseId, 
+                             'name' : name})
 
 def update(courseId, name, description, dueDate, aType, new_courseId=None,
            new_name=None, new_description=None, new_dueDate=None, 

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block navbar_content_left %}
+{% endblock navbar_content_left %}
+{% block navbar_content_right %}
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endblock navbar_content_right %}
+
+{% block body_content %}
+<div class="container">
+
+  <div class="col-md-12">
+    <h2><span style="font-weight:bold">
+	{{ course_data['name'] }}:{{ name }}
+    </span></h2>
+
+    <br/>
+    <div class="well well-lg">
+      <p>{{ course_data['description'] }}</p>
+      <span style="font-weight:bold">Due Date:{{ course_data['dueDate'] }}</span>
+    </div>
+
+<!-- TODO finish -->
+  </div>
+</div>
+
+
+{% endblock %}

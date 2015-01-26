@@ -6,6 +6,9 @@ import student_dbhelper as studentdb
 import course_dbhelper as coursedb
 import assignment_dbhelper as assignmentdb
 
+import time
+from datetime import date
+
 app = Flask(__name__)
 app.secret_key = open('session_key.txt', 'r').read().strip()
 
@@ -441,14 +444,12 @@ def course(course_id=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
-                    assignments = []
+                    assignments = assignmentdbb.getByCourse(course_id)
                     if hasPermissionToView:
                         for studentId in course['students']:
                             student = studentdb.get('', student_id=studentId)
                             if student and student.count() == 1:
                                 students.append(student[0])
-                    # TODO get assignments
-                        assignments = assignmentdb.get(course_id)
                     if session['userType'] == 'student':
                         # showRequestButton flag:
                         # 0 -> Do not show
@@ -512,7 +513,7 @@ def course(course_id=None):
                                                         request.form['password'])
                     if response_tuple[0]:
                         if request.form['submit'] == 'add':
-                            date = request.form['month']+'/'+request.form['day']+'/'+request.form['year']
+                            date = datetime.date(request.form['year'], request.form['month'], request.form['day'])
                             response_tuple = assignmentdb.insert(course_id, 
                                                                  request.form['name'], 
                                                                  request.form['description'], 
@@ -547,8 +548,41 @@ def course(course_id=None):
 def assignment(course_id=None, name=None):
     if course_id and name:
         if request.method == 'GET':
-            
-
+            hasPermissionToView = False
+            if session['userType'] == 'student':
+                hasPermissionToView = studentdb.hasCourse(session['email'],
+                                                          course_id)
+            elif session['userType'] == 'teacher':
+                hasPermissionToView = teacherdb.hasCourse(session['email'],
+                                                          course_id)
+            course = coursedb.get(course_id)
+            if course and course.count() == 1:
+                course = course[0]
+                teacher = teacherdb.get('', teacher_id=course['teacherId'])
+                if teacher and teacher.count() == 1:
+                    teacher = teacher[0]['name']
+                    students = []
+                    assignment = assignmentdb.getByCourse(course_id)
+                    if hasPermissionToView:
+                        for studentId in course['students']:
+                            student = studentdb.get('', student_id=studentId)
+                            if student and student.count() == 1:
+                                students.append(student[0])
+            return render_template('assignment.html', course_data=course, 
+                                   teacher=teacher, students=students, 
+                                   hasPermissionToView=hasPermissionToView, 
+                                   name=name, userType=session['userType'], 
+                                   assignment=assignment)
+        else:
+            if session['userType'] == 'student':
+                #something to do?
+                return redirect(url_for('assignment', course_id=course_id, name=name))
+            else:
+                #TODO FINISH
+                return redirect(url_for('assignment', course_id=course_id, name=name))
+    else:
+        return redirect(url_for('assignment', course_id=course_id, name=name))
+    
 @app.route('/messages')
 @redirect_if_not_logged_in
 def messages():
