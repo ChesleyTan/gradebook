@@ -499,7 +499,7 @@ def course(course_id=None):
 
 @app.route('/messages')
 @redirect_if_not_logged_in
-def messages():
+def messages(): 
     if session['userType'] == 'student':
         student = studentdb.get(session['email'])
         if student.count() == 1:
