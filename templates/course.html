@@ -74,7 +74,9 @@
 	{% for assignment in assignments%}
 	<tr class={{ assignment['aType'] }}>
 	  <td>{{ loop.index }}</td>
-	  <td>{{ assignment['name'] }}</td>
+	  <td>
+	    <a id="assignment" href="{{ url_for('assignment', course_id=course_data['_id'], name=assignment['name']) }}">{{ assignment['name'] }}
+	  </td>
 	  <td>{{ assignment['description'] }}</td>
 	  <td><span style="font-weight:bold">{{ assignment['dueDate'] }}</span></td>
 	</tr>
@@ -118,16 +120,6 @@
 	</div>
 	<br/>
 
-	<h1>Delete an Assignment</h1>
-	<div class="form-group">
-	  <label for="name" class="col-lg-2 control-label">Assignment Name</label>
-	  <div class="col-lg-10">
-	    <input type="text" class="form-control" id="delete_name" name="delete_name" placeholder="Assignment Name" pattern=".{2,100}">
-	  </div>
-	</div>
-	<br/>
-	<br/>
-
 	<div class="form-group">
 	  <label for="password" class="col-lg-2 control-label">Verify Password</label>
 	  <div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" pattern=".{6,50}" required>
@@ -136,7 +128,6 @@
 	<div class="form-group">
 	  <div class="col-lg-12 center-text">
 	    <button id="add" name="submit" value="add" class="btn btn-primary">Add</button>
-	    <button id="delete" name="submit" value="delete" class="btn btn-danger">Delete</button>
 	  </div>
 	</div>
       </fieldset>
