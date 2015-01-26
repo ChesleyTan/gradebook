@@ -116,3 +116,10 @@ if __name__ == "__main__":
         print response_tuple[1]
     dump()
 
+# Given a Unix epoch time d,
+# converts to date timestamp.
+# Modify the string given as an argument to 
+# strftime() in order to change the format
+# (Refer to the Python library for more info)
+def convert_to_date(d):
+    return datetime.datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S')
