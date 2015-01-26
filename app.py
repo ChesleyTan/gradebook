@@ -4,6 +4,10 @@ from functools import wraps
 import teacher_dbhelper as teacherdb
 import student_dbhelper as studentdb
 import course_dbhelper as coursedb
+import assignment_dbhelper as assignmentdb
+
+import time
+from datetime import date
 
 app = Flask(__name__)
 app.secret_key = open('session_key.txt', 'r').read().strip()
@@ -440,12 +444,12 @@ def course(course_id=None):
                 if teacher and teacher.count() == 1:
                     teacher = teacher[0]['name']
                     students = []
+                    assignments = assignmentdbb.getByCourse(course_id)
                     if hasPermissionToView:
                         for studentId in course['students']:
                             student = studentdb.get('', student_id=studentId)
                             if student and student.count() == 1:
                                 students.append(student[0])
-                    # TODO get assignments
                     if session['userType'] == 'student':
                         # showRequestButton flag:
                         # 0 -> Do not show
@@ -463,7 +467,8 @@ def course(course_id=None):
                         return render_template('course.html', course_data=course,
                                 teacher=teacher, students=students,
                                 showRequestButton=showRequestButton,
-                                hasPermissionToView=hasPermissionToView)
+                                hasPermissionToView=hasPermissionToView,
+                                assignments=assignments, userType=session['userType'])
                     else:
                         course_requests = coursedb.getCourseRequests(course_id)
                         requesters = []
@@ -474,7 +479,8 @@ def course(course_id=None):
                         return render_template('course.html', course_data=course,
                                 teacher=teacher, students=students,
                                 hasPermissionToView=hasPermissionToView,
-                                requesters=requesters)
+                                requesters=requesters,
+                                assignments=assignments, userType=session['userType'])
         else:
             if session['userType'] == 'student':
                 userId = studentdb.getId(session['email'])
@@ -493,10 +499,90 @@ def course(course_id=None):
                     else:
                         coursedb.removeCourseRequest(course_id,
                                 request.form['requester_id'])
-                    return redirect(url_for('course', course_id=course_id))
+
+                if request.form.has_key('name') and\
+                        request.form.has_key('description') and\
+                        request.form.has_key('month') and\
+                        request.form.has_key('day') and\
+                        request.form.has_key('year') and\
+                        request.form.has_key('aType') and\
+                        request.form.has_key('delete_name') and\
+                        request.form.has_key('password') and\
+                        request.form.has_key('submit'):
+                    response_tuple = teacherdb.validate(session['email'],
+                                                        request.form['password'])
+                    if response_tuple[0]:
+                        if request.form['submit'] == 'add':
+                            date = datetime.date(request.form['year'], request.form['month'], request.form['day'])
+                            response_tuple = assignmentdb.insert(course_id, 
+                                                                 request.form['name'], 
+                                                                 request.form['description'], 
+                                                                 date, 
+                                                                 request.form['aType'])
+                            flash(response_tuple[1])
+                            return redirect(url_for('course', course_id=course_id))
+                        elif request.form['submit'] == 'delete':
+                            if assignmentdb.exists(course_id, 
+                                                   request.form['delete_name']):
+                                assignmentdb.remove(course_id,
+                                                    request.form['delete_name'])
+                                flash("Successfully removed assignment")
+                            else:
+                                flash("Error: Assignment not found")
+                            return redirect(url_for('course', course_id=course_id))
+                        else:
+                            flash("Invalid request")
+                            return redirect(url_for('course', course_id=course_id))
+                    else:
+                        flash(response_tuple[1])
+                        return redirect(url_for('course', course_id=course_id))
+                else:
+                    flash("Invalid request")
+                    return redirect(url_for('course', course_id=course_id))                             
+                           
 
     return redirect(url_for('index'))
 
+@app.route('/assignment/<course_id>/<name>', methods=['GET','POST'])
+@redirect_if_not_logged_in
+def assignment(course_id=None, name=None):
+    if course_id and name:
+        if request.method == 'GET':
+            hasPermissionToView = False
+            if session['userType'] == 'student':
+                hasPermissionToView = studentdb.hasCourse(session['email'],
+                                                          course_id)
+            elif session['userType'] == 'teacher':
+                hasPermissionToView = teacherdb.hasCourse(session['email'],
+                                                          course_id)
+            course = coursedb.get(course_id)
+            if course and course.count() == 1:
+                course = course[0]
+                teacher = teacherdb.get('', teacher_id=course['teacherId'])
+                if teacher and teacher.count() == 1:
+                    teacher = teacher[0]['name']
+                    students = []
+                    assignment = assignmentdb.getByCourse(course_id)
+                    if hasPermissionToView:
+                        for studentId in course['students']:
+                            student = studentdb.get('', student_id=studentId)
+                            if student and student.count() == 1:
+                                students.append(student[0])
+            return render_template('assignment.html', course_data=course, 
+                                   teacher=teacher, students=students, 
+                                   hasPermissionToView=hasPermissionToView, 
+                                   name=name, userType=session['userType'], 
+                                   assignment=assignment)
+        else:
+            if session['userType'] == 'student':
+                #something to do?
+                return redirect(url_for('assignment', course_id=course_id, name=name))
+            else:
+                #TODO FINISH
+                return redirect(url_for('assignment', course_id=course_id, name=name))
+    else:
+        return redirect(url_for('assignment', course_id=course_id, name=name))
+    
 @app.route('/messages')
 @redirect_if_not_logged_in
 def messages():
