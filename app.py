@@ -597,6 +597,12 @@ def messages():
             return render_template('messages.html', isTeacher=True,
                         teacher_data=teacher[0])
 
+    # Page description:
+    # Should list every other user that the current user 
+    # has permission to contact. The list is sorted by
+    # most recent message sent/recieved. 
+    # Clicking takes you to that particular message page, /messages/<user>
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "Sorry, nothing at this URL.", 404
