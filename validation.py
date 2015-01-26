@@ -82,6 +82,14 @@ def isValidDueDate(dueDate):
         return (False, "Error: Due date cannot be in the past")
     return (True, "Successfully validated due date")
 
+def isValidAssignmentType(aType):
+    if not (aType=='warning' or\
+       aType=='' or\
+       aType=='info'):
+        return (False, "Invalid assignment type")
+    return (True, "Successfully validated assignment type")
+        
+
 def checkPassword(hashedPassword, tryPassword):
     return check_password_hash(hashedPassword, tryPassword)
 

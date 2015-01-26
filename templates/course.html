@@ -8,113 +8,144 @@
 
 {% block body_content %}
 <div class="container">
+
   <br/>
-    <div class="col-md-12 center-all">
-      <h2>Name</h2>
-      <span id="name">{{ course_data['name'] }}</span>
-      <br/>
-      <h2>Description</h2>
-      <p id="description">{{ course_data['description'] }}</p>
-      <h2>Teacher</h2>
-      <a id="teacher" href="{{ url_for('teacher_profile', teacher_id=course_data['teacherId']) }}">{{ teacher }}</a>
-      <br/>
-      {% if hasPermissionToView and students %}
-      <h2>Students</h2>
-      <ul class="list-unstyled-center">
-        {% for student in students %}
-        <li>
-          <a href="{{ url_for('student_profile', student_id=student['_id']) }}">{{ student['name'] }}</a>
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      {% if showRequestButton == 1 %}
-      <form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
-	<button type="submit" name="submit" value="submit" class="btn btn-success">Request Admission</button>
-      </form>
-      {% elif showRequestButton == 2 %}
-      <a href="#" class="btn btn-success disabled">Request Pending</a>
-      {% endif %}
-      {% if hasPermissionToView and requesters %}
-      <h2>Requests</h2>
-      <ul class="list-unstyled-center">
-	{% for requester in requesters %}
-	<li>
-          <form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
-            <a href="{{ url_for('student_profile', student_id=requester['_id'])}}" class="btn btn-primary">{{ requester['name'] }}</a>
-            <input type="hidden" name="requester_id" value="{{ requester['_id'] }}"></input>
-            <button type="submit" class="btn btn-success" name="request_action" value="accept">Accept</button>
-            <button type="submit" class="btn btn-danger" name="request_action" value="deny">Deny</button>
-          </form>
-	</li>
-	{% endfor %}
-      </ul>
-      {% endif %}
-      
-      <h1>Ongoing Assignments</h1>
-      {% for assignment in assignments %}
-      <div class="panel panel-primary">
-	<div class="panel-heading">
-	  <h3 class="panel-title">{{ assignment['name'] }}</h3>
-	</div>
-	<div class="panel-body">
-	  <span>
-	    <p>{{ assignment['description'] }}</p>
-	  </span>
-	  <span style="font-weight:bold">
-	    Due: {{ assignment['dueDate'] }}
-	  </span>
-	</div>
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+	<h2 class="panel-title">
+	  <span style="font-weight:bold">{{ course_data['name'] }}</span>
+	</h2>
       </div>
-      {% endfor %}
-
-      {% if userType=='teacher' %}
-      <form id='form' class="form-horizontal" method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
-	<fieldset>
-	  <h1>Add an assignment</h1>
-	  <div class="form-group">
-	    <label for="name" class="col-lg-2 control-label">Course Name</label>
-	    <div class="col-lg-10">
-	      <input type="text" class="form-control" id="name" name="name" placeholder="Assignment Name" pattern=".{2,100}">
-	    </div>
-	    <br/>
-	    <label for="description" class="col-lg-2 control-label">Description</label>
-	    <div class="col-lg-10">
-	      <textarea class="form-control" id="description" name="description" maxlength="300"></textarea>
-	    </div>
-	    <br/>
-	    <label for="description" class="col-lg-2 control-label">Due Date</label>
-	    <div class="col-lg-10">
-	      <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" pattern=".{2,100}">
-	    </div>
-	  </div>
-
-	  <h1>Delete an Assignment</h1>
-	  <div class="form-group">
-	    <label for="name" class="col-lg-2 control-label">Assignment Name</label>
-	    <div class="col-lg-10">
-	      <input type="text" class="form-control" id="delete_name" name="delete_name" placeholder="Assignment Name" pattern=".{2,100}">
-	    </div>
-	  </div>
-	  <br/>
-	  <br/>
-	  <div class="form-group">
-	    <label for="password" class="col-lg-2 control-label">Verify Password</label>
-	    <div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" pattern=".{6,50}" required>
-	    </div>
-	  </div>
-	  <div class="form-group">
-	    <div class="col-lg-12 center-text">
-	      <button id="add" name="submit" value="add" class="btn btn-primary">Add</button>
-	      <button id="delete" name="submit" value="delete" class="btn btn-danger">Delete</button>
-	    </div>
-	  </div>
-	</fieldset>
-      </form>
-      {% endif %}
-
+      <div class="panel-body">
+	<p>{{ course_data['description'] }}</p>
+	<br/>
+	<span style="font-weight:bold">Teacher:</span>
+	<a id="teacher" href="{{ url_for('teacher_profile', teacher_id=course_data['teacherId']) }}">{{ teacher }}</a>
+      </div>
     </div>
+
+    <br/>
+    {% if hasPermissionToView and students %}
+    <h2>Students</h2>
+    <ul class="list-unstyled-center">
+      {% for student in students %}
+      <li>
+	<a href="{{ url_for('student_profile', student_id=student['_id']) }}">{{ student['name'] }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if showRequestButton == 1 %}
+    <form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
+      <button type="submit" name="submit" value="submit" class="btn btn-success">Request Admission</button>
+    </form>
+    {% elif showRequestButton == 2 %}
+    <a href="#" class="btn btn-success disabled">Request Pending</a>
+    {% endif %}
+
+    {% if hasPermissionToView and requesters %}
+    <h2>Requests</h2>
+    <ul class="list-unstyled-center">
+      {% for requester in requesters %}
+      <li>
+	<form method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
+          <a href="{{ url_for('student_profile', student_id=requester['_id'])}}" class="btn btn-primary">{{ requester['name'] }}</a>
+          <input type="hidden" name="requester_id" value="{{ requester['_id'] }}"></input>
+          <button type="submit" class="btn btn-success" name="request_action" value="accept">Accept</button>
+          <button type="submit" class="btn btn-danger" name="request_action" value="deny">Deny</button>
+	</form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    
+    <h1>Ongoing Assignments</h1>
+    <table class="table table-striped table-hover">
+      <thead>
+	<tr>
+	  <th>#</th>
+	  <th>Name</th>
+	  <th>Description</th>
+	  <th>Due Date</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for assignment in assignments%}
+	<tr class={{ assignment['aType'] }}>
+	  <td>{{ loop.index }}</td>
+	  <td>{{ assignment['name'] }}</td>
+	  <td>{{ assignment['description'] }}</td>
+	  <td><span style="font-weight:bold">{{ assignment['dueDate'] }}</span></td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+
+    {% if userType=='teacher' %}
+    <form id='form' class="form-horizontal" method="POST" action="{{ url_for('course', course_id=course_data['_id']) }}">
+      <fieldset>
+	<h1>Add an assignment</h1>
+	<div class="form-group">
+	  <label for="name" class="col-lg-2 control-label">Assignment Name</label>
+	  <div class="col-lg-10">
+	    <input type="text" class="form-control" id="name" name="name" placeholder="Assignment Name" pattern=".{2,100}">
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label for="description" class="col-lg-2 control-label">Description</label>
+	  <div class="col-lg-10">
+	    <textarea class="form-control" id="description" name="description" maxlength="300"></textarea>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label for="description" class="col-lg-2 control-label">Due Date</label>
+	  <div class="col-lg-10">
+	    <input type="text" id="month" name="month" maxlength="2" placeholder="MM"> /
+	    <input type="text" id="day" name="day" maxlength="2" placeholder="DD"> /
+	    <input type="text" id="year" name="year" maxlength="4" placeholder="YYYY">
+	  </div>
+	</div>
+	<div class="form-group">
+	  <label for="description" class="col-lg-2 control'label">Assignment Type</label>
+	  <div class="col-lg-10">
+	    <div class="radio radio-primary">
+	      <label><input name="aType" id="aType" value="warning" type="radio">Test</label>
+	      <label><input name="aType" id="aType" value="" type="radio">Homework</label>
+	      <label><input name="aType" id="aType" value="info" type="radio">Review</label>
+	    </div>
+	  </div>
+	</div>
+	<br/>
+
+	<h1>Delete an Assignment</h1>
+	<div class="form-group">
+	  <label for="name" class="col-lg-2 control-label">Assignment Name</label>
+	  <div class="col-lg-10">
+	    <input type="text" class="form-control" id="delete_name" name="delete_name" placeholder="Assignment Name" pattern=".{2,100}">
+	  </div>
+	</div>
+	<br/>
+	<br/>
+
+	<div class="form-group">
+	  <label for="password" class="col-lg-2 control-label">Verify Password</label>
+	  <div class="col-lg-10"> <input type="password" class="form-control" id="password" name="password" placeholder="CurrentSuperSecretPassword" pattern=".{6,50}" required>
+	  </div>
+	</div>
+	<div class="form-group">
+	  <div class="col-lg-12 center-text">
+	    <button id="add" name="submit" value="add" class="btn btn-primary">Add</button>
+	    <button id="delete" name="submit" value="delete" class="btn btn-danger">Delete</button>
+	  </div>
+	</div>
+      </fieldset>
+    </form>
+    {% endif %}
+
+  </div>
 </div>
+
 {% endblock body_content %}
 {% block scripts %}
 {% endblock scripts %}

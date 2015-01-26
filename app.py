@@ -501,7 +501,10 @@ def course(course_id=None):
 
                 if request.form.has_key('name') and\
                         request.form.has_key('description') and\
-                        request.form.has_key('date') and\
+                        request.form.has_key('month') and\
+                        request.form.has_key('day') and\
+                        request.form.has_key('year') and\
+                        request.form.has_key('aType') and\
                         request.form.has_key('delete_name') and\
                         request.form.has_key('password') and\
                         request.form.has_key('submit'):
@@ -509,10 +512,12 @@ def course(course_id=None):
                                                         request.form['password'])
                     if response_tuple[0]:
                         if request.form['submit'] == 'add':
+                            date = request.form['month']+'/'+request.form['day']+'/'+request.form['year']
                             response_tuple = assignmentdb.insert(course_id, 
                                                                  request.form['name'], 
                                                                  request.form['description'], 
-                                                                 request.form['date'])
+                                                                 date, 
+                                                                 request.form['aType'])
                             flash(response_tuple[1])
                             return redirect(url_for('course', course_id=course_id))
                         elif request.form['submit'] == 'delete':
@@ -536,6 +541,13 @@ def course(course_id=None):
                            
 
     return redirect(url_for('index'))
+
+@app.route('/assignment/<course_id>/<name>', methods=['GET','POST'])
+@redirect_if_not_logged_in
+def assignment(course_id=None, name=None):
+    if course_id and name:
+        if request.method == 'GET':
+            
 
 @app.route('/messages')
 @redirect_if_not_logged_in
