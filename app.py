@@ -560,7 +560,7 @@ def assignment(course_id=None, name=None):
                             student = studentdb.get('', student_id=studentId)
                             if student and student.count() == 1:
                                 students.append(student[0])
-            return render_template('assignment.html', course_data=course, 
+                return render_template('assignment.html', course_data=course, 
                                    teacher=teacher, students=students, 
                                    hasPermissionToView=hasPermissionToView, 
                                    name=name, userType=session['userType'], 
