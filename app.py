@@ -5,6 +5,7 @@ import teacher_dbhelper as teacherdb
 import student_dbhelper as studentdb
 import course_dbhelper as coursedb
 import assignment_dbhelper as assignmentdb
+import message_helper as messagehelper
 
 import time
 from datetime import date
@@ -575,6 +576,17 @@ def messages():
             return render_template('messages.html', isTeacher=True,
                         teacher_data=teacher[0])
 
+    # Message pack should be passed regardless of session
+    # Message pack contains 3 columns worth of users ("messages") - designated by
+    # 0, 1, and 2 
+    # See front-end for info
+
+    # Inside of message:
+    # mini_timestamp --> timestamp shortened in terms of hours, minutes etc (e.g. "12m" "3hr" "5d")
+    # target --> user
+    # mini_preview --> first part of message (message preview / description)
+    # target_url --> url to go to the message_page of the user that is being targetted (viewing that convo)
+
     # Page description:
     # Should list every other user that the current user 
     # has permission to contact. The list is sorted by
@@ -596,17 +608,32 @@ def message_page(user=None):
                 return render_template('message_page.html', isTeacher=True,
                             teacher_data=teacher[0], target=user)
     else:
-        if session['userType'] == 'student':
-            student = studentdb.get(session['email'])
-            if student.count() == 1:
-                return render_template('message_page.html', isStudent=True,
-                            student_data=student[0], target=user)
-        else:
-            teacher = teacherdb.get(session['email'])
-            if teacher.count() == 1:
-                return render_template('message_page.html', isTeacher=True,
-                            teacher_data=teacher[0], target=user)
-                
+        if 'submit' in session: # A message was sent
+        # Database manipulation
+        # We need a database / back-end for message handling
+            if session['userType'] == 'student':
+                student = studentdb.get(session['email'])
+                if student.count() == 1:
+                    return render_template('message_page.html', isStudent=True,
+                                student_data=student[0], target=user)
+            else:
+                teacher = teacherdb.get(session['email'])
+                if teacher.count() == 1:
+                    return render_template('message_page.html', isTeacher=True,
+                                teacher_data=teacher[0], target=user)
+        else: # Message not sent
+        # Nothing extra - similar to the GET request
+            if session['userType'] == 'student':
+                student = studentdb.get(session['email'])
+                if student.count() == 1:
+                    return render_template('message_page.html', isStudent=True,
+                                student_data=student[0], target=user)
+            else:
+                teacher = teacherdb.get(session['email'])
+                if teacher.count() == 1:
+                    return render_template('message_page.html', isTeacher=True,
+                                teacher_data=teacher[0], target=user)
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404

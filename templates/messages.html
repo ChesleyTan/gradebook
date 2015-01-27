@@ -62,6 +62,21 @@
                 </div>
             </div>
             <div class="list-group-separator"></div>
+            {% for message in message_pack[0] %}
+            <div class="list-group-item">
+                <div class="row-action-primary">
+                    <i class="mdi-file-folder"></i>
+                </div>
+                <div class="row-content">
+                <a href="{{ message['target_url'] }}" style="text-decoration: none;">
+                    <div class="least-content">{{ message['mini_timestamp'] }}</div>
+                    <h4 class="list-group-item-heading">{{ message['target'] }}</h4>
+                    <p class="list-group-item-text">{{ message['mini_preview'] }}</p>
+                </a>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
+            {% endfor %}
         </div>
     </div>
     <div class="col-lg-4">
@@ -101,6 +116,21 @@
                 </div>
             </div>
             <div class="list-group-separator"></div>
+             {% for message in message_pack[1] %}
+            <div class="list-group-item">
+                <div class="row-action-primary">
+                    <i class="mdi-file-folder"></i>
+                </div>
+                <div class="row-content">
+                <a href="{{ message['target_url'] }}" style="text-decoration: none;">
+                    <div class="least-content">{{ message['mini_timestamp'] }}</div>
+                    <h4 class="list-group-item-heading">{{ message['target'] }}</h4>
+                    <p class="list-group-item-text">{{ message['mini_preview'] }}</p>
+                </a>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
+            {% endfor %}           
         </div>
     </div>
     <div class="col-lg-4">
@@ -138,6 +168,21 @@
                 </div>
             </div>
             <div class="list-group-separator"></div>
+            {% for message in message_pack[2] %}
+            <div class="list-group-item">
+                <div class="row-action-primary">
+                    <i class="mdi-file-folder"></i>
+                </div>
+                <div class="row-content">
+                <a href="{{ message['target_url'] }}" style="text-decoration: none;">
+                    <div class="least-content">{{ message['mini_timestamp'] }}</div>
+                    <h4 class="list-group-item-heading">{{ message['target'] }}</h4>
+                    <p class="list-group-item-text">{{ message['mini_preview'] }}</p>
+                </a>
+                </div>
+            </div>
+            <div class="list-group-separator"></div>
+            {% endfor %}
         </div>
     </div>        
 </div>
