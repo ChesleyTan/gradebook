@@ -9,6 +9,7 @@ assignments = db.assignments
 
 #aType can be like test or regular or review
 #dueDate is seconds from the epoch
+#i store it as different so its easier to display when requested as opposed to converting it again
 def insert(courseId, name, description, dueDate, aType):
     response_tuple = isValidAssignment(name)
     if not response_tuple[0]:
@@ -23,6 +24,16 @@ def insert(courseId, name, description, dueDate, aType):
     if not response_tuple[0]:
         return response_tuple
     if not exists(courseId, name):
+        if len(str(dueDate.month)) == 1:
+            d = '0'+str(dueDate.month)+'/'
+        else:
+            d = str(dueDate.month)+'/'
+        if len(str(dueDate.day)) == 1:
+            d = d+'0'+str(dueDate.day)+'/'
+        else:
+            d = d+str(dueDate.day)+'/'
+        d = d+str(dueDate.year)
+        
         new_assignment = {
             'courseId' : courseId,
             'name' : name,
@@ -73,7 +84,16 @@ def update(courseId, name, new_name=None, new_description=None, new_dueDate=None
         if not response_tuple[0]:
             return response_tuple
     if(exists(courseId, name)):
-        d = str(new_dueDate.month)+'/'+str(new_dueDate.day)+'/'+str(new_dueDate.year)
+        if len(str(new_dueDate.month)) == 1:
+            d = '0'+str(new_dueDate.month)+'/'
+        else:
+            d = str(new_dueDate.month)+'/'
+        if len(str(new_dueDate.day)) == 1:
+            d = d+'0'+str(new_dueDate.day)+'/'
+        else:
+            d = d+str(new_dueDate.day)+'/'
+        d = d+str(new_dueDate.year)
+
         updateDict = {}
         updateDict['name'] = new_name
         updateDict['description'] = new_description
