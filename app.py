@@ -659,7 +659,7 @@ def message_page(user=None):
                 if teacher.count() == 1:
                     return render_template('message_page.html', isTeacher=True,
                                 teacher_data=teacher[0], target=user)
-        else: # Message not send
+        else: # Message not sent
             if session['userType'] == 'student':
                 student = studentdb.get(session['email'])
                 if student.count() == 1:
@@ -670,7 +670,7 @@ def message_page(user=None):
                 if teacher.count() == 1:
                     return render_template('message_page.html', isTeacher=True,
                                 teacher_data=teacher[0], target=user)
-                                              
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
