@@ -5,6 +5,7 @@ import teacher_dbhelper as teacherdb
 import student_dbhelper as studentdb
 import course_dbhelper as coursedb
 import assignment_dbhelper as assignmentdb
+import message_helper as messagehelper
 
 import time
 from datetime import date
